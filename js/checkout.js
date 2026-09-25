@@ -1,0 +1,296 @@
+/* =========================================================
+   Volmaster Ferramentas — checkout
+   Coleta dados, entrega e forma de pagamento, calcula o total e envia
+   o pedido para o WhatsApp da loja (CONFIG.whatsapp em js/produtos.js).
+   Para cobrar online (Pix automático, cartão), troque enviaPedido()
+   pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
+   ========================================================= */
+(() => {
+  const { whatsapp, descontoPix = 0, parcelasSemJuros = 1 } = window.VOLMASTER_CONFIG;
+  const loja = window.VolmasterLoja;
+  const { moeda, esc } = loja;
+  const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
+  const $$ = (seletor, raiz = document) => [...raiz.querySelectorAll(seletor)];
+  const conteudo = $('#checkout-conteudo');
+  const CHAVE_DADOS = 'volmaster-ferramentas:cliente';
+
+  const digitos = (t) => String(t).replace(/\D/g, '');
+  const MASCARAS = {
+    telefone: (v) => { const d = digitos(v).slice(0, 11); return d.length <= 10 ? d.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (_, a, b, c) => [a && `(${a}`, a.length === 2 && ') ', b, c && `-${c}`].filter(Boolean).join('')) : d.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3'); },
+    cpf: (v) => digitos(v).slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2'),
+    cep: (v) => digitos(v).slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2'),
+  };
+
+  function cpfValido(v) {
+    const d = digitos(v);
+    if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
+    const dv = (n) => { const s = [...d.slice(0, n)].reduce((acc, c, i) => acc + Number(c) * (n + 1 - i), 0); return ((s * 10) % 11) % 10; };
+    return dv(9) === Number(d[9]) && dv(10) === Number(d[10]);
+  }
+
+  let dadosSalvos = {};
+  try { dadosSalvos = JSON.parse(localStorage.getItem(CHAVE_DADOS)) || {}; } catch { dadosSalvos = {}; }
+  const valor = (nome) => esc(dadosSalvos[nome] || '');
+
+  const campo = (nome, rotulo, attrs = '', classe = '') => `
+    <label class="campo ${classe}">
+      <span>${rotulo}</span>
+      <input name="${nome}" value="${valor(nome)}" ${attrs}>
+      <small class="campo__erro" aria-live="polite"></small>
+    </label>`;
+
+  const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
+
+  function totais(pagamento) {
+    const sub = loja.subtotal();
+    const frete = loja.frete(sub);
+    const desconto = pagamento === 'pix' ? sub * descontoPix / 100 : 0;
+    return { sub, frete, desconto, total: sub + (frete || 0) - desconto };
+  }
+
+  function resumo(pagamento) {
+    const { sub, frete, desconto, total } = totais(pagamento);
+    return `
+      <ul class="resumo__itens">
+        ${loja.itens().map(({ produto: p, qtd }) => `
+          <li>
+            <span class="resumo__midia">${loja.midia(p, false)}<span class="resumo__qtd">${qtd}</span></span>
+            <span class="resumo__nome">${esc(p.nome)}<small>${esc(p.ref)}</small></span>
+            <span class="resumo__valor">${moeda(p.preco * qtd)}</span>
+          </li>`).join('')}
+      </ul>
+      <div class="carrinho__linha"><span>Subtotal</span><span>${moeda(sub)}</span></div>
+      <div class="carrinho__linha"><span>Frete</span><span>${loja.textoFrete(frete)}</span></div>
+      ${desconto ? `<div class="carrinho__linha carrinho__linha--desconto"><span>Desconto Pix (${descontoPix}%)</span><span>− ${moeda(desconto)}</span></div>` : ''}
+      <div class="carrinho__total"><span>Total${frete === null ? ' <small>+ frete</small>' : ''}</span><strong>${moeda(total)}</strong></div>
+      ${frete === null ? '<p class="checkout__nota">O frete é calculado pelo CEP e confirmado no WhatsApp antes do pagamento.</p>' : ''}`;
+  }
+
+  function opcoesParcelas() {
+    const { total } = totais('cartao');
+    const { n: max } = loja.parcelas(total);
+    return Array.from({ length: max }, (_, i) => i + 1)
+      .map((n) => `<option value="${n}"${n === max ? ' selected' : ''}>${n}x de ${moeda(total / n)} sem juros</option>`).join('');
+  }
+
+  function formulario() {
+    const pag = dadosSalvos.pagamento || 'pix';
+    return `
+      <form class="checkout__form" id="checkout-form" novalidate>
+        <div class="checkout__campos">
+          <fieldset class="etapa">
+            <legend><span class="etapa__num">1</span> Seus dados</legend>
+            <div class="grade-campos">
+              ${campo('nome', 'Nome completo', 'required autocomplete="name" minlength="5"', 'campo--inteiro')}
+              ${campo('telefone', 'WhatsApp', 'required type="tel" inputmode="tel" autocomplete="tel-national" data-mascara="telefone" placeholder="(00) 00000-0000"')}
+              ${campo('cpf', 'CPF', 'required inputmode="numeric" data-mascara="cpf" placeholder="000.000.000-00"')}
+              ${campo('email', 'E-mail (opcional)', 'type="email" autocomplete="email"', 'campo--inteiro')}
+            </div>
+          </fieldset>
+
+          <fieldset class="etapa">
+            <legend><span class="etapa__num">2</span> Entrega</legend>
+            <div class="grade-campos">
+              ${campo('cep', 'CEP', 'required inputmode="numeric" autocomplete="postal-code" data-mascara="cep" placeholder="00000-000"')}
+              <p class="campo__ajuda" id="cep-status" aria-live="polite"></p>
+              ${campo('rua', 'Rua / avenida / rodovia', 'required autocomplete="address-line1"', 'campo--inteiro')}
+              ${campo('numero', 'Número', 'required inputmode="numeric" placeholder="ou s/n"')}
+              ${campo('complemento', 'Complemento (opcional)', 'placeholder="Posto, galpão, aos cuidados de…"')}
+              ${campo('bairro', 'Bairro', 'required')}
+              ${campo('cidade', 'Cidade', 'required autocomplete="address-level2"')}
+              <label class="campo">
+                <span>Estado</span>
+                <select name="uf" required autocomplete="address-level1">
+                  <option value="">UF</option>
+                  ${UFS.map((uf) => `<option${dadosSalvos.uf === uf ? ' selected' : ''}>${uf}</option>`).join('')}
+                </select>
+                <small class="campo__erro" aria-live="polite"></small>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="etapa">
+            <legend><span class="etapa__num">3</span> Pagamento</legend>
+            <div class="pagamentos">
+              <label class="pagamento">
+                <input type="radio" name="pagamento" value="pix"${pag === 'pix' ? ' checked' : ''}>
+                <span class="pagamento__titulo">Pix <em>${descontoPix}% off</em></span>
+                <span class="pagamento__texto">Aprovação na hora. Enviamos o código Pix no seu WhatsApp.</span>
+              </label>
+              <label class="pagamento">
+                <input type="radio" name="pagamento" value="cartao"${pag === 'cartao' ? ' checked' : ''}>
+                <span class="pagamento__titulo">Cartão de crédito</span>
+                <span class="pagamento__texto">Em até ${parcelasSemJuros}x sem juros. Enviamos o link de pagamento seguro.</span>
+              </label>
+              <label class="pagamento">
+                <input type="radio" name="pagamento" value="boleto"${pag === 'boleto' ? ' checked' : ''}>
+                <span class="pagamento__titulo">Boleto bancário</span>
+                <span class="pagamento__texto">Compensação em até 2 dias úteis.</span>
+              </label>
+            </div>
+            <label class="campo campo--parcelas" hidden>
+              <span>Parcelas</span>
+              <select name="parcelas" id="checkout-parcelas"></select>
+            </label>
+          </fieldset>
+        </div>
+
+        <aside class="checkout__resumo" aria-labelledby="resumo-titulo">
+          <h3 id="resumo-titulo">Resumo do pedido</h3>
+          <div id="checkout-resumo"></div>
+          <button class="btn btn--primario checkout__confirmar" type="submit">Confirmar pedido</button>
+          <p class="checkout__seguro">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Seus dados são usados só para entregar o pedido.
+          </p>
+        </aside>
+      </form>`;
+  }
+
+  /* ---------- Comportamento do formulário ---------- */
+
+  function atualizaPagamento(form) {
+    const pag = form.pagamento.value;
+    $('#checkout-resumo', form).innerHTML = resumo(pag);
+    const parcelas = $('.campo--parcelas', form);
+    parcelas.hidden = pag !== 'cartao';
+    if (pag === 'cartao') $('#checkout-parcelas', form).innerHTML = opcoesParcelas();
+  }
+
+  let ultimoCep = '';
+  async function buscaCep(form) {
+    const cep = digitos(form.cep.value);
+    const status = $('#cep-status', form);
+    if (cep.length !== 8 || cep === ultimoCep) return;
+    ultimoCep = cep;
+    status.textContent = 'Buscando endereço…';
+    try {
+      const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const dados = await resp.json();
+      if (dados.erro) throw new Error('CEP não encontrado');
+      if (digitos(form.cep.value) !== cep) return;
+      form.rua.value = dados.logradouro || form.rua.value;
+      form.bairro.value = dados.bairro || form.bairro.value;
+      form.cidade.value = dados.localidade || '';
+      form.uf.value = dados.uf || '';
+      status.textContent = `${dados.localidade}/${dados.uf}`;
+      (dados.logradouro ? form.numero : form.rua).focus();
+    } catch {
+      status.textContent = 'Não achamos esse CEP. Preencha o endereço manualmente.';
+    }
+  }
+
+  const MENSAGENS = {
+    nome: 'Informe seu nome completo.',
+    telefone: 'Informe um WhatsApp com DDD.',
+    cpf: 'CPF inválido.',
+    email: 'E-mail inválido.',
+    cep: 'CEP deve ter 8 números.',
+  };
+
+  function validaCampo(el) {
+    let erro = '';
+    if (el.name === 'telefone' && digitos(el.value).length < 10) erro = MENSAGENS.telefone;
+    else if (el.name === 'cpf' && !cpfValido(el.value)) erro = MENSAGENS.cpf;
+    else if (el.name === 'cep' && digitos(el.value).length !== 8) erro = MENSAGENS.cep;
+    else if (!el.checkValidity()) erro = MENSAGENS[el.name] || 'Preencha este campo.';
+    el.setCustomValidity(erro);
+    el.setAttribute('aria-invalid', String(Boolean(erro)));
+    const aviso = el.closest('.campo')?.querySelector('.campo__erro');
+    if (aviso) aviso.textContent = erro;
+    return !erro;
+  }
+
+  function prepara(form) {
+    atualizaPagamento(form);
+    form.addEventListener('input', (e) => {
+      const tipo = e.target.dataset.mascara;
+      if (tipo) e.target.value = MASCARAS[tipo](e.target.value);
+      if (e.target.name === 'cep') buscaCep(form);
+      if (e.target.getAttribute('aria-invalid') === 'true') validaCampo(e.target);
+    });
+    form.addEventListener('focusout', (e) => { if (e.target.matches('input:not([type=radio]), select') && e.target.value) validaCampo(e.target); });
+    form.addEventListener('change', (e) => { if (e.target.name === 'pagamento') atualizaPagamento(form); });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const campos = $$('input:not([type=radio]), select', form).filter((el) => el.name && el.name !== 'parcelas');
+      const invalidos = campos.filter((el) => !validaCampo(el));
+      if (invalidos.length) { invalidos[0].focus(); return; }
+      enviaPedido(form);
+    });
+  }
+
+  /* ---------- Envio do pedido ---------- */
+
+  const numeroPedido = () => {
+    const d = new Date();
+    const data = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    return `VM-${data}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  };
+
+  const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito', boleto: 'Boleto' };
+
+  function enviaPedido(form) {
+    const dados = Object.fromEntries(new FormData(form));
+    const { sub, frete, desconto, total } = totais(dados.pagamento);
+    const numero = numeroPedido();
+    const pagamento = dados.pagamento === 'cartao'
+      ? `${NOMES_PAGAMENTO.cartao} em ${dados.parcelas}x de ${moeda(total / Number(dados.parcelas))}`
+      : NOMES_PAGAMENTO[dados.pagamento];
+
+    const linhas = loja.itens().map(({ produto: p, qtd }) => `• ${qtd}x [${p.ref}] ${p.nome} — ${moeda(p.preco * qtd)}`);
+    const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
+    const mensagem = [
+      `*Novo pedido ${numero}* — Volmaster Ferramentas`,
+      '',
+      ...linhas,
+      '',
+      `Subtotal: ${moeda(sub)}`,
+      `Frete: ${loja.textoFrete(frete)}`,
+      desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
+      `*Total: ${moeda(total)}${frete === null ? ' + frete' : ''}*`,
+      `Pagamento: ${pagamento}`,
+      '',
+      `Cliente: ${dados.nome}`,
+      `CPF: ${dados.cpf}`,
+      `WhatsApp: ${dados.telefone}`,
+      dados.email ? `E-mail: ${dados.email}` : null,
+      `Entrega: ${endereco}`,
+    ].filter((l) => l !== null).join('\n');
+
+    if (!whatsapp) {
+      console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + mensagem);
+      loja.mostraToast('O recebimento de pedidos ainda está sendo configurado.');
+      return;
+    }
+
+    const { pagamento: _p, parcelas: _n, ...cliente } = dados;
+    try { localStorage.setItem(CHAVE_DADOS, JSON.stringify({ ...cliente, pagamento: dados.pagamento })); } catch { /* sem armazenamento */ }
+    window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`, '_blank', 'noopener');
+
+    conteudo.innerHTML = `
+      <div class="confirmacao">
+        <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <h3 tabindex="-1" id="confirmacao-titulo">Pedido ${numero} enviado!</h3>
+        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : dados.pagamento === 'boleto' ? 'o boleto' : 'o link de pagamento'}.</p>
+        <p class="confirmacao__total">Total: <strong>${moeda(total)}</strong> · ${esc(pagamento)}</p>
+        <div class="confirmacao__acoes">
+          <a class="btn btn--primario" href="https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>
+          <button class="btn btn--secundario" type="button" data-fecha-checkout>Continuar comprando</button>
+        </div>
+      </div>`;
+    $('[data-fecha-checkout]', conteudo).addEventListener('click', () => window.VolmasterPaineis.fechar());
+    $('#confirmacao-titulo', conteudo).focus();
+    loja.limpar();
+  }
+
+  window.VolmasterCheckout = {
+    abrir() {
+      if (!loja.itens().length) return;
+      ultimoCep = '';
+      conteudo.innerHTML = formulario();
+      prepara($('#checkout-form', conteudo));
+      window.VolmasterPaineis.abrir('checkout', $('.topo__carrinho'));
+    },
+  };
+})();

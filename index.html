@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volmaster Ferramentas | Ferramentas especiais para caminhão</title>
+  <meta name="description" content="Extratores, instaladores de retentor, chaves especiais, suportes e hidráulica para quem mexe com caminhão. Compra pelo site ou pelo WhatsApp, com envio para todo o Brasil.">
+  <meta name="theme-color" content="#111a1f">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,500..900;1,62..125,800..900&family=Caveat:wght@500;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- ========== CABEÇALHO ========== -->
+  <header class="topo" id="topo">
+    <div class="topo__inner">
+      <button class="icone-btn topo__menu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile" data-abre="menu-mobile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5h18M3 12h18M3 17.5h12"/></svg>
+      </button>
+
+      <a class="marca" href="index.html">
+        <img src="images/logo-volmaster.png" width="720" height="339" alt="Volmaster Ferramentas — página inicial">
+      </a>
+
+      <nav class="nav" aria-label="Principal">
+        <ul>
+          <li><a href="#catalogo" data-categoria="todos">Ferramentas</a></li>
+          <li><a href="#tarefas">Por serviço</a></li>
+          <li><a href="#sob-medida">Sob medida</a></li>
+          <li><a href="#duvidas">Dúvidas</a></li>
+        </ul>
+      </nav>
+
+      <div class="topo__acoes">
+        <button class="icone-btn" type="button" aria-label="Buscar" aria-expanded="false" aria-controls="busca" data-abre="busca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        </button>
+        <a class="topo__zap" href="#" data-whatsapp>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.6 19z"/><path d="M9 9.3c.3 2.8 2.9 5.4 5.7 5.7l1-1.6-2.1-1-1 1c-1-.4-1.7-1.1-2.1-2.1l1-1-1-2.1z"/></svg>
+          <span>(62) 98493-0079</span>
+        </a>
+        <button class="topo__carrinho" type="button" aria-label="Abrir carrinho" aria-expanded="false" aria-controls="carrinho" data-abre="carrinho">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 3.5h2.6l2.3 11.2h11l2.1-8H6.2"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>
+          <span class="topo__contador" aria-hidden="true" hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu mobile -->
+  <div class="painel gaveta" id="menu-mobile" hidden>
+    <div class="painel__fundo" data-fecha></div>
+    <div class="gaveta__corpo" role="dialog" aria-modal="true" aria-label="Menu">
+      <button class="icone-btn gaveta__fechar" type="button" aria-label="Fechar menu" data-fecha>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <img class="gaveta__logo" src="images/logo-volmaster.png" width="720" height="339" alt="">
+      <nav aria-label="Menu mobile">
+        <ul class="gaveta__links">
+          <li><a href="#catalogo" data-categoria="todos">Todas as ferramentas</a></li>
+          <li><a href="#catalogo" data-categoria="extratores">Extratores e sacadores</a></li>
+          <li><a href="#catalogo" data-categoria="instaladores">Instaladores de retentor</a></li>
+          <li><a href="#catalogo" data-categoria="chaves">Chaves e soquetes especiais</a></li>
+          <li><a href="#catalogo" data-categoria="suportes">Suportes, travas e gabaritos</a></li>
+          <li><a href="#catalogo" data-categoria="hidraulica">Hidráulica e diversos</a></li>
+          <li><a href="#tarefas">Procurar por serviço</a></li>
+          <li><a href="#sob-medida">Ferramenta sob medida</a></li>
+          <li><a href="#duvidas">Dúvidas</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn--whats gaveta__whats" href="#" data-whatsapp>Chamar no WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- Carrinho -->
+  <div class="painel carrinho" id="carrinho" hidden>
+    <div class="painel__fundo" data-fecha></div>
+    <div class="carrinho__corpo" role="dialog" aria-modal="true" aria-labelledby="carrinho-titulo">
+      <div class="carrinho__topo">
+        <h2 class="carrinho__titulo" id="carrinho-titulo">Seu carrinho</h2>
+        <button class="icone-btn" type="button" aria-label="Fechar carrinho" data-fecha data-foco>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="carrinho__progresso" id="carrinho-frete-box" hidden>
+        <p id="carrinho-progresso" aria-live="polite"></p>
+        <div class="barra" aria-hidden="true"><span id="carrinho-barra"></span></div>
+      </div>
+      <ul class="carrinho__lista" id="carrinho-lista"></ul>
+      <div class="carrinho__vazio" id="carrinho-vazio">
+        <p class="nota">Tá vazio por aqui…</p>
+        <p class="carrinho__vazio-dica">As ferramentas com preço sob consulta a gente orça pelo WhatsApp.</p>
+        <a class="btn btn--secundario" href="#catalogo">Ver ferramentas</a>
+      </div>
+      <div class="carrinho__rodape">
+        <div class="carrinho__linha"><span>Subtotal</span><span id="carrinho-subtotal">R$ 0,00</span></div>
+        <div class="carrinho__linha"><span>Frete</span><span id="carrinho-frete">—</span></div>
+        <div class="carrinho__total"><span>Total</span><strong id="carrinho-total">R$ 0,00</strong></div>
+        <p class="carrinho__pix" id="carrinho-pix"></p>
+        <button class="btn btn--primario carrinho__finalizar" id="carrinho-finalizar" type="button" disabled>Finalizar compra</button>
+        <button class="carrinho__esvaziar" id="carrinho-esvaziar" type="button" hidden>Esvaziar carrinho</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout -->
+  <div class="painel checkout" id="checkout" hidden>
+    <div class="painel__fundo" data-fecha></div>
+    <div class="checkout__corpo" role="dialog" aria-modal="true" aria-labelledby="checkout-titulo">
+      <div class="checkout__topo">
+        <h2 class="checkout__titulo" id="checkout-titulo">Finalizar compra</h2>
+        <button class="icone-btn" type="button" aria-label="Fechar checkout" data-fecha data-foco>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="checkout__conteudo" id="checkout-conteudo"></div>
+    </div>
+  </div>
+
+  <!-- Detalhes do produto -->
+  <div class="painel detalhe" id="detalhe" hidden>
+    <div class="painel__fundo" data-fecha></div>
+    <div class="detalhe__corpo" role="dialog" aria-modal="true" aria-labelledby="detalhe-nome">
+      <button class="icone-btn detalhe__fechar" type="button" aria-label="Fechar detalhes do produto" data-fecha data-foco>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div class="detalhe__conteudo" id="detalhe-conteudo"></div>
+    </div>
+  </div>
+
+  <!-- Busca -->
+  <div class="painel busca" id="busca" hidden>
+    <div class="painel__fundo" data-fecha></div>
+    <div class="busca__corpo" role="dialog" aria-modal="true" aria-label="Buscar ferramentas">
+      <form class="busca__form" role="search" data-busca>
+        <label class="sr-only" for="busca-campo">Buscar ferramentas</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        <input id="busca-campo" type="search" placeholder="Nome, serviço ou referência (ex.: VM-23)" autocomplete="off">
+        <button class="icone-btn" type="button" aria-label="Fechar busca" data-fecha>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </form>
+      <p class="busca__rotulo">O pessoal costuma procurar</p>
+      <ul class="busca__sugestoes">
+        <li><button type="button">Extrator</button></li>
+        <li><button type="button">Retentor</button></li>
+        <li><button type="button">Hidráulica</button></li>
+        <li><button type="button">Motor</button></li>
+        <li><button type="button">Chave</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main id="conteudo">
+    <!-- ========== HERO: o painel da oficina ========== -->
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero__inner">
+        <div class="hero__texto">
+          <p class="nota hero__oi">Opa, seja bem-vindo!</p>
+          <h1 class="hero__titulo" id="hero-titulo">Ferramenta especial pra quem mexe com <em>caminhão.</em></h1>
+          <p class="hero__desc">Extrator, instalador de retentor, chave especial, suporte, bomba hidráulica… Se a peça tá travada e a ferramenta comum não resolve, é com a gente.</p>
+          <p class="hero__desc">Não sabe se serve no seu motor? Manda uma foto no WhatsApp que a gente confere pra você.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primario" href="#catalogo">Ver as ferramentas</a>
+            <a class="btn btn--whats" href="#" data-whatsapp="Opa! Vim pelo site. Preciso de uma ferramenta, posso mandar a foto?">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.6 19z"/><path d="M9 9.3c.3 2.8 2.9 5.4 5.7 5.7l1-1.6-2.1-1-1 1c-1-.4-1.7-1.1-2.1-2.1l1-1-1-2.1z"/></svg>
+              Mandar foto no Zap
+            </a>
+          </div>
+        </div>
+
+        <div class="parede" aria-label="Algumas ferramentas do catálogo">
+          <p class="nota parede__nota" aria-hidden="true">direto da nossa parede ↓</p>
+          <a class="pendurada pendurada--1" href="#produto=vm-23" data-ver="vm-23">
+            <span class="pendurada__gancho" aria-hidden="true"></span>
+            <img src="images/produtos/vm-23-p.webp" width="600" height="273" alt="">
+            <span class="pendurada__tag"><b>VM-23</b> bomba</span>
+            <span class="sr-only">VM-23 — Bomba hidráulica manual com cilindro e manômetro</span>
+          </a>
+          <a class="pendurada pendurada--2" href="#produto=vm-35" data-ver="vm-35">
+            <span class="pendurada__gancho" aria-hidden="true"></span>
+            <img src="images/produtos/vm-35-p.webp" width="600" height="273" alt="">
+            <span class="pendurada__tag"><b>VM-35</b> instalador</span>
+            <span class="sr-only">VM-35 — Instalador de retentor com manípulo borboleta</span>
+          </a>
+          <a class="pendurada pendurada--3" href="#produto=vm-05" data-ver="vm-05">
+            <span class="pendurada__gancho" aria-hidden="true"></span>
+            <img src="images/produtos/vm-05-p.webp" width="600" height="273" alt="">
+            <span class="pendurada__tag"><b>VM-05</b> extrator</span>
+            <span class="sr-only">VM-05 — Extrator de fuso central com dois braços</span>
+          </a>
+          <a class="pendurada pendurada--4" href="#produto=vm-10" data-ver="vm-10">
+            <span class="pendurada__gancho" aria-hidden="true"></span>
+            <img src="images/produtos/vm-10-p.webp" width="600" height="273" alt="">
+            <span class="pendurada__tag"><b>VM-10</b> chave</span>
+            <span class="sr-only">VM-10 — Chave sextavada tipo pé de galinha</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONDIÇÕES ========== -->
+    <div class="fita">
+      <ul>
+        <li><strong data-desconto-pix>5%</strong> de desconto no Pix</li>
+        <li>Até <strong data-parcelas>10x</strong> sem juros no cartão</li>
+        <li>Mandamos pro Brasil inteiro</li>
+        <li>Atendimento direto no WhatsApp</li>
+      </ul>
+    </div>
+
+    <!-- ========== ORDEM DE SERVIÇO ========== -->
+    <section class="secao" id="tarefas" aria-labelledby="tarefas-titulo">
+      <div class="os">
+        <div class="os__cabeca">
+          <div>
+            <p class="os__tipo">Ordem de serviço</p>
+            <h2 class="os__titulo" id="tarefas-titulo">O que tem pra fazer hoje?</h2>
+          </div>
+          <img class="os__globo" src="images/globo.png" width="400" height="438" alt="">
+        </div>
+        <p class="os__dica">Marca o serviço que a gente separa as ferramentas que ajudam.</p>
+        <ul class="os__lista" id="lista-tarefas"></ul>
+      </div>
+    </section>
+
+    <!-- ========== OFERTAS ========== -->
+    <div class="faixa-escura" id="ofertas-faixa" hidden>
+      <section class="secao" id="ofertas" aria-labelledby="ofertas-titulo">
+        <div class="secao__topo">
+          <p class="nota">aproveita enquanto dura</p>
+          <h2 class="secao__titulo" id="ofertas-titulo">Ofertas</h2>
+        </div>
+        <div class="produtos" id="grade-ofertas"></div>
+      </section>
+    </div>
+
+    <!-- ========== CATÁLOGO ========== -->
+    <section class="secao" id="catalogo" aria-labelledby="catalogo-titulo">
+      <div class="secao__topo secao__topo--linha">
+        <div>
+          <p class="nota">tudo que tem na bancada</p>
+          <h2 class="secao__titulo" id="catalogo-titulo">Ferramentas</h2>
+        </div>
+        <form class="catalogo__busca" role="search" data-busca>
+          <label class="sr-only" for="catalogo-busca-campo">Buscar ferramentas</label>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+          <input id="catalogo-busca-campo" type="search" placeholder="Buscar por nome ou VM-…" autocomplete="off">
+        </form>
+      </div>
+      <div class="filtros">
+        <div class="filtros__grupo" role="group" aria-label="Categoria" id="filtros-categorias"></div>
+        <div class="filtros__linha">
+          <div class="filtros__ativos" id="filtros-ativos"></div>
+          <p class="filtros__contagem" id="catalogo-contagem" aria-live="polite"></p>
+          <label class="filtros__ordem">
+            <span>Ordenar</span>
+            <select id="catalogo-ordem">
+              <option value="relevancia">Padrão</option>
+              <option value="referencia">Referência</option>
+              <option value="menor">Menor preço</option>
+              <option value="maior">Maior preço</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="produtos" id="grade-catalogo"></div>
+      <noscript><p class="vazio">Ative o JavaScript do navegador para ver as ferramentas.</p></noscript>
+    </section>
+
+    <!-- ========== SOB MEDIDA ========== -->
+    <section class="sob-medida" id="sob-medida" aria-labelledby="sob-medida-titulo">
+      <div class="sob-medida__inner">
+        <div class="sob-medida__texto">
+          <p class="nota nota--clara">não achou a sua?</p>
+          <h2 class="sob-medida__titulo" id="sob-medida-titulo">A gente faz sob medida.</h2>
+          <p>Tem serviço que só sai com ferramenta feita pra ele. Manda a foto da peça, o modelo do motor ou até um rabisco com as medidas. A gente estuda e te passa o orçamento.</p>
+          <a class="btn btn--branco" href="#" data-whatsapp="Opa! Preciso de uma ferramenta sob medida. Vou mandar a foto e as medidas.">Pedir ferramenta sob medida</a>
+        </div>
+
+        <figure class="conversa" aria-label="Exemplo de como funciona o pedido sob medida pelo WhatsApp">
+          <figcaption class="conversa__topo">
+            <img src="images/favicon.png" width="64" height="64" alt="">
+            <span><strong>Volmaster Ferramentas</strong><small>exemplo de conversa</small></span>
+          </figcaption>
+          <div class="conversa__corpo">
+            <p class="balao balao--cliente">Boa tarde! Preciso sacar uma peça assim, mas não tenho a ferramenta 😕</p>
+            <p class="balao balao--cliente balao--foto"><img src="images/produtos/vm-34-p.webp" width="600" height="273" alt="Foto de exemplo de uma peça enviada pelo cliente"></p>
+            <p class="balao balao--loja">Boa tarde! Qual é o motor? Se tiver a medida do furo, manda também que fica mais fácil.</p>
+            <p class="balao balao--cliente">Mando já!</p>
+            <p class="balao balao--loja">Fechou. Com isso a gente te passa o orçamento 👍</p>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== COMO COMPRAR ========== -->
+    <section class="secao" id="como-funciona" aria-labelledby="como-titulo">
+      <div class="secao__topo">
+        <p class="nota">sem complicação</p>
+        <h2 class="secao__titulo" id="como-titulo">Como comprar</h2>
+      </div>
+      <ol class="passos">
+        <li class="passo">
+          <span class="passo__num" aria-hidden="true">1</span>
+          <div>
+            <h3>Achou a ferramenta?</h3>
+            <p>Se tem preço, põe no carrinho. Se é sob consulta, clica em “Pedir orçamento” e a gente responde no WhatsApp.</p>
+          </div>
+        </li>
+        <li class="passo">
+          <span class="passo__num" aria-hidden="true">2</span>
+          <div>
+            <h3>Fecha o pedido</h3>
+            <p>Coloca seus dados e o CEP e escolhe: Pix com desconto, cartão ou boleto.</p>
+          </div>
+        </li>
+        <li class="passo">
+          <span class="passo__num" aria-hidden="true">3</span>
+          <div>
+            <h3>Chega na sua oficina</h3>
+            <p>Confirmamos tudo pelo WhatsApp e mandamos com código de rastreio.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ========== DÚVIDAS ========== -->
+    <section class="secao secao--estreita" id="duvidas" aria-labelledby="duvidas-titulo">
+      <div class="secao__topo">
+        <p class="nota">as que mais chegam no Zap</p>
+        <h2 class="secao__titulo" id="duvidas-titulo">Dúvidas</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Como eu sei se a ferramenta serve no meu motor?</summary>
+          <p>Manda pra gente a referência (tipo VM-23) e o modelo do motor ou do caminhão. A gente confere antes de você comprar, sem compromisso.</p>
+        </details>
+        <details>
+          <summary>Por que algumas estão com preço sob consulta?</summary>
+          <p>Porque algumas mudam de medida conforme a aplicação. Clica em “Pedir orçamento” que a gente te passa o valor certinho.</p>
+        </details>
+        <details>
+          <summary>Vocês fazem ferramenta sob medida mesmo?</summary>
+          <p>Fazemos. Com a foto da peça, o modelo do motor ou um desenho com as medidas, a gente estuda e te manda o orçamento.</p>
+        </details>
+        <details>
+          <summary>Como posso pagar?</summary>
+          <p>Pix com <span data-desconto-pix>5%</span> de desconto, cartão em até <span data-parcelas>10x</span> sem juros ou boleto.</p>
+        </details>
+        <details>
+          <summary>Quanto tempo demora pra chegar?</summary>
+          <p>Depende do seu CEP. A gente te fala o prazo junto com o frete, antes de você pagar, e manda o código de rastreio quando despachar.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="rodape__inner">
+      <div class="rodape__marca">
+        <img src="images/logo-volmaster-completa.png" width="720" height="357" alt="Volmaster Ferramentas — (62) 98493-0079">
+      </div>
+      <div>
+        <p class="rodape__titulo">Loja</p>
+        <ul>
+          <li><a href="#catalogo" data-categoria="todos">Todas as ferramentas</a></li>
+          <li><a href="#tarefas">Procurar por serviço</a></li>
+          <li><a href="#sob-medida">Sob medida</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="rodape__titulo">Atendimento</p>
+        <ul>
+          <li><a href="#" data-whatsapp>WhatsApp (62) 98493-0079</a></li>
+          <li><a href="#duvidas">Dúvidas</a></li>
+          <li><a href="#como-funciona">Como comprar</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="rodape__titulo">Pagamento</p>
+        <ul class="rodape__pagamentos">
+          <li>Pix</li><li>Cartão</li><li>Boleto</li>
+        </ul>
+      </div>
+    </div>
+    <p class="rodape__copy">© <span id="ano">2026</span> Volmaster Ferramentas</p>
+  </footer>
+
+  <a class="whats-flutuante" href="#" data-whatsapp aria-label="Chamar no WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.6 19z"/><path d="M9 9.3c.3 2.8 2.9 5.4 5.7 5.7l1-1.6-2.1-1-1 1c-1-.4-1.7-1.1-2.1-2.1l1-1-1-2.1z"/></svg>
+  </a>
+
+  <script src="js/produtos.js" defer></script>
+  <script src="js/loja.js" defer></script>
+  <script src="js/checkout.js" defer></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>
