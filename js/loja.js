@@ -3,7 +3,7 @@
    Os dados ficam em js/produtos.js · o checkout fica em js/checkout.js
    ========================================================= */
 (() => {
-  const { freteGratisAcima = 0, freteFixo = 0, descontoPix = 0, parcelasSemJuros = 1, parcelaMinima = 0, whatsapp } = window.VOLMASTER_CONFIG;
+  const { freteGratisAcima = 0, freteFixo = 0, descontoPix = 0, whatsapp } = window.VOLMASTER_CONFIG;
   const CATEGORIAS = window.VOLMASTER_CATEGORIAS;
   const TAREFAS = window.VOLMASTER_TAREFAS;
   const PRODUTOS = window.VOLMASTER_PRODUTOS;
@@ -20,18 +20,10 @@
   const temPreco = (p) => typeof p.preco === 'number';
   const estoque = (p) => p.estoque ?? 999;
   const disponivel = (p) => temPreco(p) && estoque(p) > 0;
-  const comPix = (v) => v * (1 - descontoPix / 100);
   const itensTexto = (n) => `${n} ${n === 1 ? 'item' : 'itens'}`;
   const linkWhats = (texto) => (whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(texto)}` : '#');
 
-  function parcelas(v) {
-    const n = Math.max(1, Math.min(parcelasSemJuros, Math.floor(v / (parcelaMinima || v))));
-    return { n, valor: v / n };
-  }
-
   // regras comerciais nos textos da página
-  $$('[data-desconto-pix]').forEach((el) => { el.textContent = `${descontoPix}%`; });
-  $$('[data-parcelas]').forEach((el) => { el.textContent = `${parcelasSemJuros}x`; });
   $$('[data-frete-texto]').forEach((el) => {
     el.textContent = freteGratisAcima ? `Frete grátis acima de ${moeda(freteGratisAcima).replace(',00', '')}` : 'Enviamos para todo o Brasil';
   });
@@ -55,7 +47,7 @@
   const svgIcone = (nome) => `<svg class="icone" viewBox="0 0 64 64" aria-hidden="true" focusable="false">${ICONES[nome] || ICONES.chave}</svg>`;
 
   function midia(p, comAlt = true, grande = false) {
-    const alt = comAlt ? esc(`${p.nome} — ${p.ref}`) : '';
+    const alt = comAlt ? esc(p.nome) : '';
     if (!p.foto) return `<span class="arte">${svgIcone(tarefaPorId[p.tarefas?.[0]]?.icone)}</span>`;
     const base = `images/produtos/${esc(p.foto)}`;
     return grande
@@ -73,11 +65,10 @@
 
   function preco(p) {
     if (!temPreco(p)) return '<div class="produto__precos"><p class="produto__preco produto__preco--consulta">Preço sob consulta</p><p class="produto__parcela">A gente passa o valor no WhatsApp</p></div>';
-    const { n, valor } = parcelas(p.preco);
     return `<div class="produto__precos">
         ${p.precoAntigo ? `<s><span class="sr-only">de </span>${moeda(p.precoAntigo)}</s>` : ''}
-        <p class="produto__preco"><strong>${moeda(comPix(p.preco))}</strong> <span>no Pix</span></p>
-        <p class="produto__parcela">${n > 1 ? `ou ${n}x de ${moeda(valor)} sem juros` : `ou ${moeda(p.preco)} no cartão`}</p>
+        <p class="produto__preco"><strong>${moeda(p.preco)}</strong></p>
+        <p class="produto__parcela">Parcelamos no cartão</p>
       </div>`;
   }
 
@@ -109,7 +100,7 @@
 
   function acao(p) {
     if (!temPreco(p)) {
-      return `<a class="btn-add btn-add--whats" href="${linkWhats(`Olá! Quero um orçamento da ferramenta ${p.ref} — ${p.nome}.`)}" target="_blank" rel="noopener">Pedir orçamento<span class="sr-only"> de ${esc(p.nome)} pelo WhatsApp</span></a>`;
+      return `<a class="btn-add btn-add--whats" href="${linkWhats(`Olá! Quero um orçamento da ferramenta ${p.nome}.`)}" target="_blank" rel="noopener">Pedir orçamento<span class="sr-only"> de ${esc(p.nome)} pelo WhatsApp</span></a>`;
     }
     if (!(estoque(p) > 0)) return '<button class="btn-add" type="button" disabled>Esgotado</button>';
     if (carrinho[p.id]) return seletorQtd(p, carrinho[p.id]);
@@ -119,9 +110,9 @@
   function cartao(p) {
     const link = `href="#produto=${p.id}" data-ver="${p.id}"`;
     return `<article class="produto" data-id="${p.id}">
-      <a class="produto__midia" ${link} tabindex="-1" aria-hidden="true">${midia(p, false)}${selo(p)}<span class="etiqueta">${esc(p.ref)}</span></a>
+      <a class="produto__midia" ${link} tabindex="-1" aria-hidden="true">${midia(p, false)}${selo(p)}</a>
       <div class="produto__info">
-        <p class="produto__ref"><span class="sr-only">${esc(p.ref)} · </span>${esc(categoriaPorId[p.categoria]?.nome || '')}</p>
+        <p class="produto__ref">${esc(categoriaPorId[p.categoria]?.nome || '')}</p>
         <h3 class="produto__nome"><a ${link}>${esc(p.nome)}</a></h3>
         <p class="produto__tipo">${esc(p.tipo)}</p>
         ${preco(p)}
@@ -199,7 +190,6 @@
     return `<li class="item" data-id="${id}">
       <div class="item__midia">${midia(p, false)}</div>
       <div class="item__info">
-        <p class="item__ref">${esc(p.ref)}</p>
         <p class="item__nome">${esc(p.nome)}</p>
         <p class="item__un">${moeda(p.preco)} / un.</p>
         <div class="item__linha">${seletorQtd(p, q, 'qtd--mini')}<strong>${moeda(p.preco * q)}</strong></div>
@@ -286,14 +276,14 @@
     const secao = (titulo, corpo) => `<section class="detalhe__secao"><h3>${esc(titulo)}</h3>${corpo}</section>`;
     const tarefas = (p.tarefas || []).map((id) => tarefaPorId[id]).filter(Boolean);
     const duvida = whatsapp
-      ? `<a class="detalhe__duvida" href="${linkWhats(`Olá! Tenho uma dúvida sobre a ferramenta ${p.ref} — ${p.nome}.`)}" target="_blank" rel="noopener">Ficou na dúvida se serve no seu motor? Manda uma mensagem que a gente confere <span aria-hidden="true">→</span></a>`
+      ? `<a class="detalhe__duvida" href="${linkWhats(`Olá! Tenho uma dúvida sobre a ferramenta ${p.nome}.`)}" target="_blank" rel="noopener">Ficou na dúvida se serve no seu motor? Manda uma mensagem que a gente confere <span aria-hidden="true">→</span></a>`
       : '';
     return [
       p.resumo && `<p class="detalhe__resumo">${esc(p.resumo)}</p>`,
       tarefas.length && `<div class="detalhe__tarefas"><span>Ajuda a:</span> ${tarefas.map((t) => `<button type="button" class="chip chip--mini" data-tarefa="${t.id}">${esc(t.titulo)}</button>`).join(' ')}</div>`,
       p.aplicacao && secao('Aplicação', `<p>${esc(p.aplicacao)}</p>`),
       p.destaques?.length && secao('Destaques', `<ul class="detalhe__lista">${p.destaques.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`),
-      secao('Especificações', `<dl class="detalhe__specs">${[['Referência', p.ref], ['Categoria', categoriaPorId[p.categoria]?.nome], ...(p.specs || [])].filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`),
+      secao('Especificações', `<dl class="detalhe__specs">${[['Categoria', categoriaPorId[p.categoria]?.nome], ...(p.specs || [])].filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`),
       duvida,
     ].filter(Boolean).join('');
   }
@@ -305,7 +295,6 @@
     conteudoDetalhe.innerHTML = `
       <div class="detalhe__midia">${midia(p, true, true)}${selo(p)}</div>
       <div class="detalhe__info">
-        <p class="detalhe__ref">${esc(p.ref)}</p>
         <h2 class="detalhe__nome" id="detalhe-nome">${esc(p.nome)}</h2>
         <p class="detalhe__tipo">${esc(p.tipo)}</p>
         <div class="detalhe__compra">
@@ -360,7 +349,7 @@
   $('#ofertas-faixa').hidden = !ofertas.length;
 
   const indice = Object.fromEntries(PRODUTOS.map((p) => [p.id, {
-    principal: normaliza([p.ref, p.nome, p.tipo, categoriaPorId[p.categoria]?.nome, ...(p.tarefas || []).map((t) => tarefaPorId[t]?.titulo)].filter(Boolean).join(' ')),
+    principal: normaliza([p.nome, p.tipo, categoriaPorId[p.categoria]?.nome, ...(p.tarefas || []).map((t) => tarefaPorId[t]?.titulo)].filter(Boolean).join(' ')),
     extra: normaliza([p.resumo, p.aplicacao, ...(p.destaques || [])].filter(Boolean).join(' ')),
   }]));
 
@@ -383,7 +372,6 @@
       relevancia: (a, b) => b.nota - a.nota || a.i - b.i,
       menor: (a, b) => semPreco(a.p) - semPreco(b.p) || (a.p.preco ?? 0) - (b.p.preco ?? 0) || a.i - b.i,
       maior: (a, b) => semPreco(a.p) - semPreco(b.p) || (b.p.preco ?? 0) - (a.p.preco ?? 0) || a.i - b.i,
-      referencia: (a, b) => a.p.ref.localeCompare(b.p.ref, 'pt-BR', { numeric: true }),
     };
     return lista.sort(criterios[estado.ordem]).map((r) => r.p);
   }
@@ -458,7 +446,6 @@
     subtotal,
     frete,
     textoFrete,
-    parcelas,
     midia,
     moeda,
     esc,

@@ -5,7 +5,7 @@
    Os NOMES abaixo foram escritos a partir das fotos. Confira e ajuste
    para o nome/aplicação correta de cada ferramenta (motor, modelo etc.).
 
-   ref          código do produto (aparece no card e na mensagem do WhatsApp)
+   ref          código interno do produto (não aparece no site)
    preco        preço à vista no cartão/boleto
                 null = "Sob consulta" (botão de orçamento pelo WhatsApp)
    precoAntigo  opcional — preço riscado (o produto aparece em "Ofertas")
@@ -25,9 +25,7 @@ window.VOLMASTER_CONFIG = {
   whatsapp: '5562984930079',
   freteGratisAcima: 0,     // frete grátis a partir deste valor (0 = desligado)
   freteFixo: 0,            // 0 = frete combinado no WhatsApp após o pedido
-  descontoPix: 5,          // % de desconto no Pix
-  parcelasSemJuros: 10,    // máximo de parcelas sem juros no cartão
-  parcelaMinima: 50,       // valor mínimo de cada parcela
+  descontoPix: 0,          // % de desconto no Pix (0 = sem desconto)
 };
 
 window.VOLMASTER_CATEGORIAS = [
@@ -52,51 +50,47 @@ const FOTO = (n) => `vm-${String(n).padStart(2, '0')}`;
 
 window.VOLMASTER_PRODUTOS = [
   // ---------- Extratores e sacadores ----------
-  { ref: 'VM-05', categoria: 'extratores', tarefas: ['sacar'], nome: 'Extrator de fuso central com dois braços', tipo: 'Sacador de rolamento e engrenagem', preco: null, foto: FOTO(5) },
-  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Extrator de garras tipo garfo', tipo: 'Garras longas com gancho', preco: null, foto: FOTO(6) },
-  { ref: 'VM-15', categoria: 'extratores', tarefas: ['sacar'], nome: 'Kit extrator com fuso roscado e buchas', tipo: 'Fuso, porca e buchas de apoio', preco: null, foto: FOTO(15) },
-  { ref: 'VM-16', categoria: 'extratores', tarefas: ['sacar'], nome: 'Sacador de fuso horizontal com base', tipo: 'Base com furos de fixação', preco: null, foto: FOTO(16) },
-  { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Sacador de ponte com fuso vertical', tipo: 'Ponte de apoio e fuso longo', preco: null, foto: FOTO(25) },
-  { ref: 'VM-26', categoria: 'extratores', tarefas: ['sacar'], nome: 'Placa extratora com fuso e furos múltiplos', tipo: 'Placa com 6 furos de fixação', preco: null, foto: FOTO(26) },
-  { ref: 'VM-27', categoria: 'extratores', tarefas: ['sacar'], nome: 'Placa extratora com fuso — modelo largo', tipo: 'Placa com rasgos de ajuste', preco: null, foto: FOTO(27) },
-  { ref: 'VM-34', categoria: 'extratores', tarefas: ['sacar'], nome: 'Extrator de fuso longo com garras internas', tipo: 'Para peças em alojamento fundo', preco: null, foto: FOTO(34) },
+  { ref: 'VM-05', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo principal', tipo: 'Extrator de fuso central com dois braços', preco: 2110, foto: FOTO(5) },
+  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta H pra sacar as engrenagens do eixo', tipo: 'Extrator de garras tipo garfo', preco: 3199, foto: FOTO(6) },
+  { ref: 'VM-15', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o pino da marcha ré', tipo: 'Kit extrator com fuso roscado e buchas', preco: 1100, foto: FOTO(15) },
+  { ref: 'VM-16', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra instalar trocador de calor', tipo: 'Sacador de fuso horizontal com base', preco: 598, foto: FOTO(16) },
+  { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o filtro DPF', tipo: 'Sacador de ponte com fuso vertical', preco: 1110, foto: FOTO(25) },
+  { ref: 'VM-26', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta pra trocar retentor de válvulas do cabeçote D13', tipo: 'Placa extratora com fuso e furos múltiplos', preco: 792, foto: 'vm-26-14' },
+  { ref: 'VM-27', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta pra trocar retentor de válvulas do cabeçote D8K', tipo: 'Placa extratora com fuso — modelo largo', preco: 699, foto: FOTO(27) },
+  { ref: 'VM-34', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar camisa de cilindro D13', tipo: 'Extrator de fuso longo com garras internas', preco: 2364, foto: FOTO(34) },
 
   // ---------- Instaladores ----------
-  { ref: 'VM-11', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com flange e pinos-guia', tipo: 'Montagem centralizada', preco: null, foto: FOTO(11) },
+  { ref: 'VM-11', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro do Scania Super', tipo: 'Instalador de retentor com flange e pinos-guia', preco: 3199, foto: FOTO(11) },
   { ref: 'VM-13', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Jogo de buchas de montagem bipartidas', tipo: 'Buchas e anel de encosto', preco: null, foto: FOTO(13) },
-  { ref: 'VM-18', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Bucha instaladora escalonada', tipo: 'Encosto em dois diâmetros', preco: null, foto: FOTO(18) },
-  { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Jogo de tubos instaladores — 4 medidas', tipo: 'Para buchas e rolamentos', preco: null, foto: FOTO(20) },
-  { ref: 'VM-22', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Jogo de anéis instaladores — 3 peças', tipo: 'Anéis de encosto usinados', preco: null, foto: FOTO(22) },
-  { ref: 'VM-28', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Anel instalador escalonado de grande diâmetro', tipo: 'Usinado em aço', preco: null, foto: FOTO(28) },
-  { ref: 'VM-35', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com manípulo borboleta', tipo: 'Fuso de avanço manual', preco: null, foto: FOTO(35) },
-  { ref: 'VM-36', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com anel guia', tipo: 'Corpo, tampa e anel', preco: null, foto: FOTO(36) },
-  { ref: 'VM-37', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com manípulo — modelo alto', tipo: 'Fuso de avanço manual', preco: null, foto: FOTO(37) },
-  { ref: 'VM-38', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com pinos de fixação', tipo: 'Fixa no flange da peça', preco: null, foto: FOTO(38) },
-  { ref: 'VM-39', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Instalador de retentor com cabo lateral', tipo: 'Corpo usinado com furos', preco: null, foto: FOTO(39) },
+  { ref: 'VM-18', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta de sacar eixo extensão Crawler', tipo: 'Bucha instaladora escalonada', preco: 532, foto: FOTO(18) },
+  { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor', 'prensar'], nome: 'Kit copos de prensagem — 7 unidades', tipo: 'Jogo de tubos e anéis instaladores', preco: 3198, foto: 'vm-20-22' },
+  { ref: 'VM-28', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar o prato', tipo: 'Anel escalonado de grande diâmetro', preco: 3299, foto: FOTO(28) },
+  { ref: 'VM-35', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro D13', tipo: 'Instalador de retentor com manípulo borboleta', preco: 4564, foto: 'vm-35-36' },
+  { ref: 'VM-37', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor dianteiro D13', tipo: 'Instalador de retentor com manípulo', preco: 3568, foto: 'vm-37-38' },
+  { ref: 'VM-39', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro VM D8K', tipo: 'Instalador de retentor com cabo lateral', preco: 3209, foto: FOTO(39) },
 
   // ---------- Chaves e soquetes ----------
-  { ref: 'VM-01', categoria: 'chaves', tarefas: ['porca', 'travar'], nome: 'Chave de travamento com flange de 4 furos', tipo: 'Cabo tubular longo', preco: null, foto: FOTO(1) },
-  { ref: 'VM-07', categoria: 'chaves', tarefas: ['porca'], nome: 'Soquete especial estriado com flange', tipo: 'Perfil de 12 pontas', preco: null, foto: FOTO(7) },
-  { ref: 'VM-10', categoria: 'chaves', tarefas: ['porca'], nome: 'Chave sextavada tipo pé de galinha', tipo: 'Encaixe quadrado para catraca', preco: null, foto: FOTO(10) },
-  { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca'], nome: 'Chave de porca sextavada com encaixe quadrado', tipo: 'Corpo de anel reforçado', preco: null, foto: FOTO(19) },
+  { ref: 'VM-01', categoria: 'chaves', tarefas: ['sacar', 'travar'], nome: 'Ferramenta de sacar o flange', tipo: 'Chave de travamento com flange de 4 furos', preco: 809, foto: FOTO(1) },
+  { ref: 'VM-07', categoria: 'chaves', tarefas: ['travar'], nome: 'Ferramenta de fixar camisa de cilindro pra fazer as medições', tipo: 'Soquete especial estriado com flange', preco: 199, foto: FOTO(7) },
+  { ref: 'VM-10', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta de sacar tubo de lubrificação da caixa', tipo: 'Chave sextavada tipo pé de galinha', preco: 199, foto: FOTO(10) },
+  { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta de sacar tubo de lubrificação da caixa', tipo: 'Chave de porca sextavada com encaixe quadrado', preco: 360, foto: FOTO(19) },
 
   // ---------- Suportes, travas e gabaritos ----------
-  { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Travessa de içamento com olhais', tipo: 'Para motor e câmbio', preco: null, foto: FOTO(3) },
-  { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Olhal de içamento com base roscada', tipo: 'Base usinada', preco: null, foto: FOTO(4) },
-  { ref: 'VM-02', categoria: 'suportes', tarefas: ['travar'], nome: 'Haste com olhal e fuso roscado', tipo: 'Haste longa com porca', preco: null, foto: FOTO(2) },
-  { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Gabarito de chapa com recortes', tipo: 'Posicionamento e trava', preco: null, foto: FOTO(8) },
-  { ref: 'VM-09', categoria: 'suportes', tarefas: ['travar'], nome: 'Anel de fixação bipartido com parafusos', tipo: 'Abraçadeira de aço', preco: null, foto: FOTO(9) },
-  { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Barra de travamento com furos passantes', tipo: 'Par de barras usinadas', preco: null, foto: FOTO(12) },
-  { ref: 'VM-14', categoria: 'suportes', tarefas: ['travar'], nome: 'Placa guia com pino central', tipo: 'Placa com 7 furos', preco: null, foto: FOTO(14) },
-  { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Placa de montagem com braços de apoio', tipo: 'Braços ajustáveis', preco: null, foto: FOTO(29) },
-  { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte de apoio com prato elevado', tipo: 'Base recortada e colunas', preco: null, foto: FOTO(30) },
-  { ref: 'VM-31', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte de apoio com prato — modelo baixo', tipo: 'Base recortada e colunas curtas', preco: null, foto: FOTO(31) },
-  { ref: 'VM-32', categoria: 'suportes', tarefas: ['travar', 'sacar'], nome: 'Bloco de fixação com dois fusos', tipo: 'Furo central passante', preco: null, foto: FOTO(32) },
-  { ref: 'VM-33', categoria: 'suportes', tarefas: ['travar'], nome: 'Chapa de apoio com recorte meia-lua', tipo: 'Chapa grossa de aço', preco: null, foto: FOTO(33) },
+  { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta de tirar o balanceiro', tipo: 'Travessa de içamento com olhais', preco: 871.90, foto: FOTO(3) },
+  { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta pra erguer o grupo redutor', tipo: 'Olhal de içamento com base roscada', preco: 565, foto: FOTO(4) },
+  { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de tirar os eixos da caixa', tipo: 'Haste com olhal e fuso roscado', preco: 548, foto: FOTO(2) },
+  { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
+  { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo piloto', tipo: 'Anel de fixação bipartido com parafusos', preco: 1662, foto: FOTO(9) },
+  { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta de guiar cabeçote do D12D', tipo: 'Barra de travamento com furos passantes', preco: 649, foto: FOTO(12) },
+  { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte da caixa', tipo: 'Placa de montagem com braços de apoio', preco: 1795, foto: FOTO(29) },
+  { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte do motor VM D8K', tipo: 'Suporte de apoio com prato elevado', preco: 2590, foto: FOTO(30) },
+  { ref: 'VM-31', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte do motor D13', tipo: 'Suporte de apoio com prato — modelo baixo', preco: 2100, foto: FOTO(31) },
+  { ref: 'VM-32', categoria: 'suportes', tarefas: ['travar', 'sacar'], nome: 'Ferramenta H', tipo: 'Bloco de fixação com dois fusos', preco: 1750, foto: FOTO(32) },
+  { ref: 'VM-33', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta meia-lua pra sacar as engrenagens do eixo', tipo: 'Chapa de apoio com recorte meia-lua', preco: 1829, foto: FOTO(33) },
 
   // ---------- Hidráulica e diversos ----------
-  { ref: 'VM-23', categoria: 'hidraulica', tarefas: ['prensar', 'sacar'], nome: 'Bomba hidráulica manual com cilindro e manômetro', tipo: 'Conjunto completo com mangueira', preco: null, foto: FOTO(23) },
-  { ref: 'VM-21', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Mangueira de teste com engates rápidos', tipo: 'Linha transparente reforçada', preco: null, foto: FOTO(21) },
-  { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['travar'], nome: 'Alça curvada de aço', tipo: 'Acabamento preto', preco: null, foto: FOTO(17) },
-  { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['travar'], nome: 'Alça curvada de aço — modelo alto', tipo: 'Acabamento oxidado', preco: null, foto: FOTO(24) },
+  { ref: 'VM-23', categoria: 'hidraulica', tarefas: ['prensar', 'sacar'], nome: 'Bomba e pistão hidráulico', tipo: 'Bomba manual com cilindro, mangueira e manômetro', preco: 7890, foto: FOTO(23) },
+  { ref: 'VM-21', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Ferramenta de teste de luva de bico D13A e D13C', tipo: 'Mangueira de teste com engates rápidos', preco: 299, foto: FOTO(21) },
+  { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o virabrequim', tipo: 'Alça curvada de aço', preco: 383, foto: FOTO(17) },
+  { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o comando', tipo: 'Alça curvada de aço — modelo alto', preco: 333, foto: FOTO(24) },
 ].map((p) => ({ ...p, id: p.ref.toLowerCase() }));

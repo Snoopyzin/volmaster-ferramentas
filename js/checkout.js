@@ -6,7 +6,7 @@
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
 (() => {
-  const { whatsapp, descontoPix = 0, parcelasSemJuros = 1 } = window.VOLMASTER_CONFIG;
+  const { whatsapp, descontoPix = 0 } = window.VOLMASTER_CONFIG;
   const loja = window.VolmasterLoja;
   const { moeda, esc } = loja;
   const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
@@ -17,7 +17,13 @@
   const digitos = (t) => String(t).replace(/\D/g, '');
   const MASCARAS = {
     telefone: (v) => { const d = digitos(v).slice(0, 11); return d.length <= 10 ? d.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (_, a, b, c) => [a && `(${a}`, a.length === 2 && ') ', b, c && `-${c}`].filter(Boolean).join('')) : d.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3'); },
-    cpf: (v) => digitos(v).slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2'),
+    // CPF até 11 números, CNPJ de 12 a 14
+    cpf: (v) => {
+      const d = digitos(v).slice(0, 14);
+      return d.length <= 11
+        ? d.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+        : d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5');
+    },
     cep: (v) => digitos(v).slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2'),
   };
 
@@ -27,6 +33,15 @@
     const dv = (n) => { const s = [...d.slice(0, n)].reduce((acc, c, i) => acc + Number(c) * (n + 1 - i), 0); return ((s * 10) % 11) % 10; };
     return dv(9) === Number(d[9]) && dv(10) === Number(d[10]);
   }
+
+  function cnpjValido(v) {
+    const d = digitos(v);
+    if (d.length !== 14 || /^(\d)\1+$/.test(d)) return false;
+    const dv = (n) => { const s = [...d.slice(0, n)].reduce((acc, c, i) => acc + Number(c) * ((n - 1 - i) % 8 + 2), 0); const r = s % 11; return r < 2 ? 0 : 11 - r; };
+    return dv(12) === Number(d[12]) && dv(13) === Number(d[13]);
+  }
+
+  const documentoValido = (v) => cpfValido(v) || cnpjValido(v);
 
   let dadosSalvos = {};
   try { dadosSalvos = JSON.parse(localStorage.getItem(CHAVE_DADOS)) || {}; } catch { dadosSalvos = {}; }
@@ -55,7 +70,7 @@
         ${loja.itens().map(({ produto: p, qtd }) => `
           <li>
             <span class="resumo__midia">${loja.midia(p, false)}<span class="resumo__qtd">${qtd}</span></span>
-            <span class="resumo__nome">${esc(p.nome)}<small>${esc(p.ref)}</small></span>
+            <span class="resumo__nome">${esc(p.nome)}</span>
             <span class="resumo__valor">${moeda(p.preco * qtd)}</span>
           </li>`).join('')}
       </ul>
@@ -64,13 +79,6 @@
       ${desconto ? `<div class="carrinho__linha carrinho__linha--desconto"><span>Desconto Pix (${descontoPix}%)</span><span>− ${moeda(desconto)}</span></div>` : ''}
       <div class="carrinho__total"><span>Total${frete === null ? ' <small>+ frete</small>' : ''}</span><strong>${moeda(total)}</strong></div>
       ${frete === null ? '<p class="checkout__nota">O frete é calculado pelo CEP e confirmado no WhatsApp antes do pagamento.</p>' : ''}`;
-  }
-
-  function opcoesParcelas() {
-    const { total } = totais('cartao');
-    const { n: max } = loja.parcelas(total);
-    return Array.from({ length: max }, (_, i) => i + 1)
-      .map((n) => `<option value="${n}"${n === max ? ' selected' : ''}>${n}x de ${moeda(total / n)} sem juros</option>`).join('');
   }
 
   function formulario() {
@@ -83,8 +91,8 @@
             <div class="grade-campos">
               ${campo('nome', 'Nome completo', 'required autocomplete="name" minlength="5"', 'campo--inteiro')}
               ${campo('telefone', 'WhatsApp', 'required type="tel" inputmode="tel" autocomplete="tel-national" data-mascara="telefone" placeholder="(00) 00000-0000"')}
-              ${campo('cpf', 'CPF', 'required inputmode="numeric" data-mascara="cpf" placeholder="000.000.000-00"')}
-              ${campo('email', 'E-mail (opcional)', 'type="email" autocomplete="email"', 'campo--inteiro')}
+              ${campo('cpf', 'CPF ou CNPJ', 'required inputmode="numeric" data-mascara="cpf" placeholder="CPF ou CNPJ"')}
+              ${campo('email', 'E-mail', 'required type="email" autocomplete="email"', 'campo--inteiro')}
             </div>
           </fieldset>
 
@@ -114,13 +122,13 @@
             <div class="pagamentos">
               <label class="pagamento">
                 <input type="radio" name="pagamento" value="pix"${pag === 'pix' ? ' checked' : ''}>
-                <span class="pagamento__titulo">Pix <em>${descontoPix}% off</em></span>
+                <span class="pagamento__titulo">Pix${descontoPix ? ` <em>${descontoPix}% off</em>` : ''}</span>
                 <span class="pagamento__texto">Aprovação na hora. Enviamos o código Pix no seu WhatsApp.</span>
               </label>
               <label class="pagamento">
                 <input type="radio" name="pagamento" value="cartao"${pag === 'cartao' ? ' checked' : ''}>
                 <span class="pagamento__titulo">Cartão de crédito</span>
-                <span class="pagamento__texto">Em até ${parcelasSemJuros}x sem juros. Enviamos o link de pagamento seguro.</span>
+                <span class="pagamento__texto">Parcelado. As condições a gente passa no WhatsApp junto com o link de pagamento.</span>
               </label>
               <label class="pagamento">
                 <input type="radio" name="pagamento" value="boleto"${pag === 'boleto' ? ' checked' : ''}>
@@ -128,10 +136,6 @@
                 <span class="pagamento__texto">Compensação em até 2 dias úteis.</span>
               </label>
             </div>
-            <label class="campo campo--parcelas" hidden>
-              <span>Parcelas</span>
-              <select name="parcelas" id="checkout-parcelas"></select>
-            </label>
           </fieldset>
         </div>
 
@@ -152,9 +156,6 @@
   function atualizaPagamento(form) {
     const pag = form.pagamento.value;
     $('#checkout-resumo', form).innerHTML = resumo(pag);
-    const parcelas = $('.campo--parcelas', form);
-    parcelas.hidden = pag !== 'cartao';
-    if (pag === 'cartao') $('#checkout-parcelas', form).innerHTML = opcoesParcelas();
   }
 
   let ultimoCep = '';
@@ -183,15 +184,15 @@
   const MENSAGENS = {
     nome: 'Informe seu nome completo.',
     telefone: 'Informe um WhatsApp com DDD.',
-    cpf: 'CPF inválido.',
-    email: 'E-mail inválido.',
+    cpf: 'CPF ou CNPJ inválido.',
+    email: 'Informe um e-mail válido.',
     cep: 'CEP deve ter 8 números.',
   };
 
   function validaCampo(el) {
     let erro = '';
     if (el.name === 'telefone' && digitos(el.value).length < 10) erro = MENSAGENS.telefone;
-    else if (el.name === 'cpf' && !cpfValido(el.value)) erro = MENSAGENS.cpf;
+    else if (el.name === 'cpf' && !documentoValido(el.value)) erro = MENSAGENS.cpf;
     else if (el.name === 'cep' && digitos(el.value).length !== 8) erro = MENSAGENS.cep;
     else if (!el.checkValidity()) erro = MENSAGENS[el.name] || 'Preencha este campo.';
     el.setCustomValidity(erro);
@@ -213,7 +214,7 @@
     form.addEventListener('change', (e) => { if (e.target.name === 'pagamento') atualizaPagamento(form); });
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const campos = $$('input:not([type=radio]), select', form).filter((el) => el.name && el.name !== 'parcelas');
+      const campos = $$('input:not([type=radio]), select', form).filter((el) => el.name);
       const invalidos = campos.filter((el) => !validaCampo(el));
       if (invalidos.length) { invalidos[0].focus(); return; }
       enviaPedido(form);
@@ -235,10 +236,10 @@
     const { sub, frete, desconto, total } = totais(dados.pagamento);
     const numero = numeroPedido();
     const pagamento = dados.pagamento === 'cartao'
-      ? `${NOMES_PAGAMENTO.cartao} em ${dados.parcelas}x de ${moeda(total / Number(dados.parcelas))}`
+      ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
 
-    const linhas = loja.itens().map(({ produto: p, qtd }) => `• ${qtd}x [${p.ref}] ${p.nome} — ${moeda(p.preco * qtd)}`);
+    const linhas = loja.itens().map(({ produto: p, qtd }) => `• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`);
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
     const mensagem = [
       `*Novo pedido ${numero}* — Volmaster Ferramentas`,
@@ -252,9 +253,9 @@
       `Pagamento: ${pagamento}`,
       '',
       `Cliente: ${dados.nome}`,
-      `CPF: ${dados.cpf}`,
+      `${digitos(dados.cpf).length === 14 ? 'CNPJ' : 'CPF'}: ${dados.cpf}`,
       `WhatsApp: ${dados.telefone}`,
-      dados.email ? `E-mail: ${dados.email}` : null,
+      `E-mail: ${dados.email}`,
       `Entrega: ${endereco}`,
     ].filter((l) => l !== null).join('\n');
 
@@ -264,7 +265,7 @@
       return;
     }
 
-    const { pagamento: _p, parcelas: _n, ...cliente } = dados;
+    const { pagamento: _p, ...cliente } = dados;
     try { localStorage.setItem(CHAVE_DADOS, JSON.stringify({ ...cliente, pagamento: dados.pagamento })); } catch { /* sem armazenamento */ }
     window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`, '_blank', 'noopener');
 

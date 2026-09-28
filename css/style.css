@@ -328,7 +328,6 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .campo__erro:empty { display: none; }
 .campo__ajuda { align-self: end; padding-bottom: 12px; font-size: 13px; color: var(--azul-claro); }
 .campo__ajuda:empty { display: none; }
-.campo--parcelas { margin-top: 14px; }
 
 .pagamentos { display: grid; gap: 10px; }
 .pagamento {
@@ -396,8 +395,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
   .detalhe__corpo { height: 100%; border-radius: 0; border: 0; }
 }
 .detalhe__midia { position: relative; background: #0c1317; display: grid; place-items: center; }
-.detalhe__midia img { width: 100%; height: 100%; object-fit: cover; }
-@media (max-width: 899px) { .detalhe__midia img { aspect-ratio: 16 / 10; height: auto; } }
+/* foto inteira, sem cortar: as fotos são largas e a coluna é alta */
+.detalhe__midia img { width: 100%; height: 100%; object-fit: contain; }
+@media (max-width: 899px) { .detalhe__midia img { aspect-ratio: 1200 / 545; height: auto; } }
 .detalhe__info { padding: 32px clamp(20px, 3vw, 36px) 40px; display: flex; flex-direction: column; gap: 10px; }
 .detalhe__ref { font: 800 13px var(--titulo); font-stretch: 125%; letter-spacing: .1em; color: var(--azul-claro); }
 .detalhe__nome { font: 800 clamp(22px, 2.6vw, 30px)/1.15 var(--titulo); font-stretch: 112%; text-transform: uppercase; padding-right: 40px; }
