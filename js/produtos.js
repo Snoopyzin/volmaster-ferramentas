@@ -65,9 +65,9 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-40', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor dianteiro do motor DC13 Scania Super.', selo: 'Retentor dianteiro', preco: 2780, foto: FOTO(11) },
   { ref: 'VM-18', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do eixo de extensão Crawler das transmissões ASO-C e ASO-ULC.', preco: 532, foto: FOTO(18) },
   { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor', 'prensar'], nome: 'Kit com 7 copos de prensagem desenvolvidos para facilitar a instalação de rolamentos e engrenagens das transmissões Volvo I-Shift.', preco: 3198, foto: 'vm-20-22' },
-  { ref: 'VM-28', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar o prato', tipo: 'Anel escalonado de grande diâmetro', preco: 3299, foto: FOTO(28) },
-  { ref: 'VM-35', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro D13', tipo: 'Instalador de retentor com manípulo borboleta', preco: 4564, foto: 'vm-35-36' },
-  { ref: 'VM-37', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor dianteiro D13', tipo: 'Instalador de retentor com manípulo', preco: 3568, foto: 'vm-37-38' },
+  { ref: 'VM-28', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para a remoção do anel de acoplamento do redutor alto (prato) das transmissões Volvo I-Shift.', preco: 3299, foto: FOTO(28) },
+  { ref: 'VM-35', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para a instalação do retentor traseiro dos motores Volvo D13, compatível com modelos modernos e antigos.', preco: 4564, foto: 'vm-35-36' },
+  { ref: 'VM-37', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor dianteiro moderno dos motores Volvo D13, proporcionando mais precisão, segurança e agilidade durante a montagem.', preco: 3568, foto: 'vm-37-38' },
   { ref: 'VM-39', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro VM D8K', tipo: 'Instalador de retentor com cabo lateral', preco: 3209, foto: FOTO(39) },
 
   // ---------- Chaves e soquetes ----------
