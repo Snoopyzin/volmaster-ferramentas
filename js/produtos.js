@@ -80,7 +80,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta de tirar o balanceiro', tipo: 'Travessa de içamento com olhais', preco: 871.90, foto: FOTO(3) },
   { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta pra erguer o grupo redutor', tipo: 'Olhal de içamento com base roscada', preco: 565, foto: FOTO(4) },
   { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de tirar os eixos da caixa', tipo: 'Haste com olhal e fuso roscado', preco: 548, foto: FOTO(2) },
-  { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
+  // fora do site por enquanto: { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
   { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo piloto', tipo: 'Anel de fixação bipartido com parafusos', preco: 1662, foto: FOTO(9) },
   { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta de guiar cabeçote do D12D', tipo: 'Barra de travamento com furos passantes', preco: 649, foto: FOTO(12) },
   { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte da caixa', tipo: 'Placa de montagem com braços de apoio', preco: 1795, foto: FOTO(29) },
