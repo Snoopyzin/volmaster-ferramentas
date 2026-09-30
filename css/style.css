@@ -477,7 +477,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 @media (min-width: 960px) { .hero__inner { grid-template-columns: 1fr 1.1fr; } }
 .hero__oi { margin-bottom: 14px; }
 .hero__titulo {
-  font: 900 clamp(34px, 5vw, 60px)/1.02 var(--titulo); font-stretch: 118%;
+  font: 900 clamp(26px, 3.4vw, 42px)/1.08 var(--titulo); font-stretch: 118%;
   letter-spacing: -.015em; text-transform: uppercase;
 }
 .hero__titulo em {
