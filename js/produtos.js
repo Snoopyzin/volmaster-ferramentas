@@ -62,6 +62,7 @@ window.VOLMASTER_PRODUTOS = [
 
   // ---------- Instaladores ----------
   { ref: 'VM-11', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor traseiro do motor DC13 Scania Super.', preco: 3199, foto: FOTO(11) },
+  { ref: 'VM-40', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor dianteiro do motor DC13 Scania Super.', preco: 2780, foto: FOTO(11) },
   { ref: 'VM-18', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta de sacar eixo extensão Crawler', tipo: 'Bucha instaladora escalonada', preco: 532, foto: FOTO(18) },
   { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor', 'prensar'], nome: 'Kit copos de prensagem — 7 unidades', tipo: 'Jogo de tubos e anéis instaladores', preco: 3198, foto: 'vm-20-22' },
   { ref: 'VM-28', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar o prato', tipo: 'Anel escalonado de grande diâmetro', preco: 3299, foto: FOTO(28) },
