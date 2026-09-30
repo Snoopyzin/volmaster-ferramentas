@@ -81,7 +81,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do grupo redutor da transmissão, proporcionando maior segurança e estabilidade durante a desmontagem.', preco: 565, foto: FOTO(4) },
   { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção dos eixos das transmissões Volvo I-Shift e VT.', preco: 548, foto: FOTO(2) },
   // fora do site por enquanto: { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
-  { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo piloto', tipo: 'Anel de fixação bipartido com parafusos', preco: 1662, foto: FOTO(9) },
+  { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do rolamento do eixo de entrada das transmissões Volvo I-Shift.', preco: 1662, foto: FOTO(9) },
   { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta de guiar cabeçote do D12D', tipo: 'Barra de travamento com furos passantes', preco: 649, foto: FOTO(12) },
   { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte da caixa', tipo: 'Placa de montagem com braços de apoio', preco: 1795, foto: FOTO(29) },
   { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte do motor VM D8K', tipo: 'Suporte de apoio com prato elevado', preco: 2590, foto: FOTO(30) },
