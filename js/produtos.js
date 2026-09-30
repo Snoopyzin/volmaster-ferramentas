@@ -51,7 +51,7 @@ const FOTO = (n) => `vm-${String(n).padStart(2, '0')}`;
 window.VOLMASTER_PRODUTOS = [
   // ---------- Extratores e sacadores ----------
   { ref: 'VM-05', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo principal', tipo: 'Ferramenta especial para remoção do rolamento do eixo principal, desenvolvida para aplicações em transmissões Volvo I-Shift e VT.', preco: 2110, foto: FOTO(5) },
-  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta H pra sacar as engrenagens do eixo', tipo: 'Extrator de garras tipo garfo', preco: 3199, foto: FOTO(6) },
+  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta H pra sacar as engrenagens do eixo', tipo: 'Ferramenta especial desenvolvida para a remoção das engrenagens do eixo principal das transmissões Volvo I-Shift e VT.', preco: 3199, foto: FOTO(6) },
   { ref: 'VM-15', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o pino da marcha ré', tipo: 'Kit extrator com fuso roscado e buchas', preco: 1100, foto: FOTO(15) },
   { ref: 'VM-16', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra instalar trocador de calor', tipo: 'Sacador de fuso horizontal com base', preco: 598, foto: FOTO(16) },
   { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o filtro DPF', tipo: 'Sacador de ponte com fuso vertical', preco: 1110, foto: FOTO(25) },
