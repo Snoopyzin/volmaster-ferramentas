@@ -486,6 +486,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 }
 .hero__desc { max-width: 520px; margin-top: 18px; font-size: 17px; color: var(--texto-2); }
 .hero__desc + .hero__desc { margin-top: 10px; }
+.hero__chamada { font: 800 18px var(--titulo); font-stretch: 112%; letter-spacing: .02em; text-transform: uppercase; color: var(--texto); }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
 /* chapa perfurada com as ferramentas penduradas */
