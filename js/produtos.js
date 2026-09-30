@@ -92,6 +92,6 @@ window.VOLMASTER_PRODUTOS = [
   // ---------- Hidráulica e diversos ----------
   { ref: 'VM-23', categoria: 'hidraulica', tarefas: ['prensar', 'sacar'], nome: 'Conjunto hidráulico desenvolvido para auxiliar na remoção e instalação de componentes mecânicos que exigem aplicação de força controlada.', preco: 7890, foto: FOTO(23) },
   { ref: 'VM-21', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Ferramenta especial desenvolvida para realizar o teste de fuga de compressão no sistema de combustível através da luva do bico injetor dos motores Volvo D13A e D13C.', preco: 299, foto: FOTO(21) },
-  { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o virabrequim', tipo: 'Alça curvada de aço', preco: 383, foto: FOTO(17) },
+  { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do virabrequim durante os serviços de desmontagem do motor.', preco: 383, foto: FOTO(17) },
   { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o comando', tipo: 'Alça curvada de aço — modelo alto', preco: 333, foto: FOTO(24) },
 ].map((p) => ({ ...p, id: p.ref.toLowerCase() }));
