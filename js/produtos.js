@@ -84,7 +84,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do rolamento do eixo de entrada das transmissões Volvo I-Shift.', preco: 1662, foto: FOTO(9) },
   { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta especial desenvolvida para auxiliar no procedimento de centralização do cabeçote dos motores Volvo D12D.', preco: 649, foto: FOTO(12) },
   { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte especial desenvolvido para a fixação das transmissões Volvo I-Shift e VT no cavalete de recondicionamento.', preco: 1795, foto: FOTO(29) },
-  { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte do motor VM D8K', tipo: 'Suporte de apoio com prato elevado', preco: 2590, foto: FOTO(30) },
+  { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte especial desenvolvido para a fixação do motor Volvo VM D8K no cavalete de recondicionamento.', preco: 2590, foto: FOTO(30) },
   { ref: 'VM-31', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte do motor D13', tipo: 'Suporte de apoio com prato — modelo baixo', preco: 2100, foto: FOTO(31) },
   { ref: 'VM-32', categoria: 'suportes', tarefas: ['travar', 'sacar'], nome: 'Ferramenta H', tipo: 'Bloco de fixação com dois fusos', preco: 1750, foto: FOTO(32) },
   { ref: 'VM-33', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta meia-lua pra sacar as engrenagens do eixo', tipo: 'Chapa de apoio com recorte meia-lua', preco: 1829, foto: FOTO(33) },
