@@ -71,7 +71,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-39', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor traseiro dos motores Volvo VM D8K.', preco: 3209, foto: FOTO(39) },
 
   // ---------- Chaves e soquetes ----------
-  { ref: 'VM-01', categoria: 'chaves', tarefas: ['sacar', 'travar'], nome: 'Ferramenta de sacar o flange', tipo: 'Chave de travamento com flange de 4 furos', preco: 809, foto: FOTO(1) },
+  { ref: 'VM-01', categoria: 'chaves', tarefas: ['sacar', 'travar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção da porca do flange de saída das transmissões Volvo I-Shift.', preco: 809, foto: FOTO(1) },
   { ref: 'VM-07', categoria: 'chaves', tarefas: ['travar'], nome: 'Ferramenta de fixar camisa de cilindro pra fazer as medições', tipo: 'Soquete especial estriado com flange', preco: 199, foto: FOTO(7) },
   { ref: 'VM-10', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta de sacar tubo de lubrificação da caixa', tipo: 'Chave sextavada tipo pé de galinha', preco: 199, foto: FOTO(10) },
   { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta de sacar tubo de lubrificação da caixa', tipo: 'Chave de porca sextavada com encaixe quadrado', preco: 360, foto: FOTO(19) },
