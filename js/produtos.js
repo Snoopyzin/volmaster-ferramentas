@@ -58,7 +58,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do filtro de partículas (DPF) dos veículos Volvo Euro 6.', preco: 1110, foto: FOTO(25) },
   { ref: 'VM-26', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a substituição dos retentores de válvulas do cabeçote dos motores Volvo D13.', preco: 792, foto: 'vm-26-14' },
   { ref: 'VM-27', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta pra trocar retentor de válvulas do cabeçote D8K', tipo: 'Placa extratora com fuso — modelo largo', preco: 699, foto: FOTO(27) },
-  { ref: 'VM-34', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar camisa de cilindro D13', tipo: 'Extrator de fuso longo com garras internas', preco: 2364, foto: FOTO(34) },
+  { ref: 'VM-34', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para a remoção da camisa de cilindro dos motores Volvo D13.', preco: 2364, foto: FOTO(34) },
 
   // ---------- Instaladores ----------
   { ref: 'VM-11', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro do Scania Super', tipo: 'Instalador de retentor com flange e pinos-guia', preco: 3199, foto: FOTO(11) },
