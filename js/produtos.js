@@ -74,7 +74,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-01', categoria: 'chaves', tarefas: ['sacar', 'travar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção da porca do flange de saída das transmissões Volvo I-Shift.', preco: 809, foto: FOTO(1) },
   { ref: 'VM-07', categoria: 'chaves', tarefas: ['travar'], nome: 'Kit com 7 peças, desenvolvido para fixar a camisa de cilindro durante a realização de medições no bloco do motor.', preco: 199, foto: FOTO(7) },
   { ref: 'VM-10', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção e o torque do tubo de lubrificação das transmissões Volvo I-Shift.', preco: 199, foto: FOTO(10) },
-  { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta de sacar tubo de lubrificação da caixa', tipo: 'Chave de porca sextavada com encaixe quadrado', preco: 360, foto: FOTO(19) },
+  { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção e o torque do tubo de lubrificação das transmissões Volvo I-Shift. Além disso, a mesma ferramenta pode ser utilizada para remover e aplicar o torque na válvula de alívio do bloco do motor Volvo D13.', preco: 360, foto: FOTO(19) },
 
   // ---------- Suportes, travas e gabaritos ----------
   { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta de tirar o balanceiro', tipo: 'Travessa de içamento com olhais', preco: 871.90, foto: FOTO(3) },
