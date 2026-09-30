@@ -63,8 +63,8 @@ window.VOLMASTER_PRODUTOS = [
   // ---------- Instaladores ----------
   { ref: 'VM-11', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor traseiro do motor DC13 Scania Super.', selo: 'Retentor traseiro', preco: 3199, foto: 'vm-11-traseiro' },
   { ref: 'VM-40', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do retentor dianteiro do motor DC13 Scania Super.', selo: 'Retentor dianteiro', preco: 2780, foto: FOTO(11) },
-  { ref: 'VM-18', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta de sacar eixo extensão Crawler', tipo: 'Bucha instaladora escalonada', preco: 532, foto: FOTO(18) },
-  { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor', 'prensar'], nome: 'Kit copos de prensagem — 7 unidades', tipo: 'Jogo de tubos e anéis instaladores', preco: 3198, foto: 'vm-20-22' },
+  { ref: 'VM-18', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do eixo de extensão Crawler das transmissões ASO-C e ASO-ULC.', preco: 532, foto: FOTO(18) },
+  { ref: 'VM-20', categoria: 'instaladores', tarefas: ['retentor', 'prensar'], nome: 'Kit com 7 copos de prensagem desenvolvidos para facilitar a instalação de rolamentos e engrenagens das transmissões Volvo I-Shift.', preco: 3198, foto: 'vm-20-22' },
   { ref: 'VM-28', categoria: 'instaladores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar o prato', tipo: 'Anel escalonado de grande diâmetro', preco: 3299, foto: FOTO(28) },
   { ref: 'VM-35', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor traseiro D13', tipo: 'Instalador de retentor com manípulo borboleta', preco: 4564, foto: 'vm-35-36' },
   { ref: 'VM-37', categoria: 'instaladores', tarefas: ['retentor'], nome: 'Ferramenta de instalar retentor dianteiro D13', tipo: 'Instalador de retentor com manípulo', preco: 3568, foto: 'vm-37-38' },
