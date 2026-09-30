@@ -6,7 +6,7 @@
    para o nome/aplicação correta de cada ferramenta (motor, modelo etc.).
 
    ref          código interno do produto (não aparece no site)
-   preco        preço à vista no cartão/boleto
+   preco        preço à vista (Pix ou cartão)
                 null = "Sob consulta" (botão de orçamento pelo WhatsApp)
    precoAntigo  opcional — preço riscado (o produto aparece em "Ofertas")
    selo         opcional — etiqueta no card (ex.: 'Mais vendido')

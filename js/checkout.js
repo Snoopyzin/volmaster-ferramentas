@@ -130,11 +130,6 @@
                 <span class="pagamento__titulo">Cartão de crédito</span>
                 <span class="pagamento__texto">Parcelado. As condições a gente passa no WhatsApp junto com o link de pagamento.</span>
               </label>
-              <label class="pagamento">
-                <input type="radio" name="pagamento" value="boleto"${pag === 'boleto' ? ' checked' : ''}>
-                <span class="pagamento__titulo">Boleto bancário</span>
-                <span class="pagamento__texto">Compensação em até 2 dias úteis.</span>
-              </label>
             </div>
           </fieldset>
         </div>
@@ -229,7 +224,7 @@
     return `VM-${data}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   };
 
-  const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito', boleto: 'Boleto' };
+  const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
 
   function enviaPedido(form) {
     const dados = Object.fromEntries(new FormData(form));
@@ -273,7 +268,7 @@
       <div class="confirmacao">
         <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
         <h3 tabindex="-1" id="confirmacao-titulo">Pedido ${numero} enviado!</h3>
-        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : dados.pagamento === 'boleto' ? 'o boleto' : 'o link de pagamento'}.</p>
+        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>
         <p class="confirmacao__total">Total: <strong>${moeda(total)}</strong> · ${esc(pagamento)}</p>
         <div class="confirmacao__acoes">
           <a class="btn btn--primario" href="https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>
