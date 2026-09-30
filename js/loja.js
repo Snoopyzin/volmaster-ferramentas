@@ -114,7 +114,7 @@
       <div class="produto__info">
         <p class="produto__ref">${esc(categoriaPorId[p.categoria]?.nome || '')}</p>
         <h3 class="produto__nome"><a ${link}>${esc(p.nome)}</a></h3>
-        <p class="produto__tipo">${esc(p.tipo)}</p>
+        ${p.tipo ? `<p class="produto__tipo">${esc(p.tipo)}</p>` : ''}
         ${preco(p)}
         <div class="produto__acao" data-id="${p.id}">${acao(p)}</div>
       </div>
@@ -296,7 +296,7 @@
       <div class="detalhe__midia">${midia(p, true, true)}${selo(p)}</div>
       <div class="detalhe__info">
         <h2 class="detalhe__nome" id="detalhe-nome">${esc(p.nome)}</h2>
-        <p class="detalhe__tipo">${esc(p.tipo)}</p>
+        ${p.tipo ? `<p class="detalhe__tipo">${esc(p.tipo)}</p>` : ''}
         <div class="detalhe__compra">
           ${preco(p)}
           ${restam}

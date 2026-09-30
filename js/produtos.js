@@ -13,6 +13,7 @@
    categoria    id de uma categoria em VOLMASTER_CATEGORIAS
    tarefas      ids de VOLMASTER_TAREFAS em que a ferramenta ajuda
    estoque      opcional — quantidade disponível (0 = esgotado)
+   tipo         opcional — linha cinza embaixo do nome
    foto         nome do arquivo em images/produtos/ (sem .webp)
    aplicacao    opcional — motores/veículos em que a ferramenta é usada
    resumo       opcional — texto da página do produto
@@ -50,12 +51,12 @@ const FOTO = (n) => `vm-${String(n).padStart(2, '0')}`;
 
 window.VOLMASTER_PRODUTOS = [
   // ---------- Extratores e sacadores ----------
-  { ref: 'VM-05', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo principal', tipo: 'Ferramenta especial para remoção do rolamento do eixo principal, desenvolvida para aplicações em transmissões Volvo I-Shift e VT.', preco: 2110, foto: FOTO(5) },
-  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta H pra sacar as engrenagens do eixo', tipo: 'Ferramenta especial desenvolvida para a remoção das engrenagens do eixo principal das transmissões Volvo I-Shift e VT.', preco: 3199, foto: FOTO(6) },
-  { ref: 'VM-15', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o pino da marcha ré', tipo: 'Ferramenta especial para a remoção do pino da marcha-ré e, em conjunto com o dispositivo específico, para a instalação do anel de acoplamento do grupo redutor alto da transmissão Volvo I-Shift.', preco: 1100, foto: FOTO(15) },
-  { ref: 'VM-16', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra instalar trocador de calor', tipo: 'Ferramenta especial desenvolvida para facilitar a instalação do trocador de calor nos motores Volvo D13A e D13C.', preco: 598, foto: FOTO(16) },
-  { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta de sacar o filtro DPF', tipo: 'Ferramenta especial desenvolvida para facilitar a remoção do filtro de partículas (DPF) dos veículos Volvo Euro 6.', preco: 1110, foto: FOTO(25) },
-  { ref: 'VM-26', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta pra trocar retentor de válvulas do cabeçote D13', tipo: 'Ferramenta especial desenvolvida para facilitar a substituição dos retentores de válvulas do cabeçote dos motores Volvo D13.', preco: 792, foto: 'vm-26-14' },
+  { ref: 'VM-05', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial para remoção do rolamento do eixo principal, desenvolvida para aplicações em transmissões Volvo I-Shift e VT.', preco: 2110, foto: FOTO(5) },
+  { ref: 'VM-06', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para a remoção das engrenagens do eixo principal das transmissões Volvo I-Shift e VT.', preco: 3199, foto: FOTO(6) },
+  { ref: 'VM-15', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial para a remoção do pino da marcha-ré e, em conjunto com o dispositivo específico, para a instalação do anel de acoplamento do grupo redutor alto da transmissão Volvo I-Shift.', preco: 1100, foto: FOTO(15) },
+  { ref: 'VM-16', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a instalação do trocador de calor nos motores Volvo D13A e D13C.', preco: 598, foto: FOTO(16) },
+  { ref: 'VM-25', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção do filtro de partículas (DPF) dos veículos Volvo Euro 6.', preco: 1110, foto: FOTO(25) },
+  { ref: 'VM-26', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta especial desenvolvida para facilitar a substituição dos retentores de válvulas do cabeçote dos motores Volvo D13.', preco: 792, foto: 'vm-26-14' },
   { ref: 'VM-27', categoria: 'extratores', tarefas: ['sacar', 'retentor'], nome: 'Ferramenta pra trocar retentor de válvulas do cabeçote D8K', tipo: 'Placa extratora com fuso — modelo largo', preco: 699, foto: FOTO(27) },
   { ref: 'VM-34', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta pra sacar camisa de cilindro D13', tipo: 'Extrator de fuso longo com garras internas', preco: 2364, foto: FOTO(34) },
 
