@@ -221,7 +221,7 @@
   const numeroPedido = () => {
     const d = new Date();
     const data = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-    return `VM-${data}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    return `${data}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   };
 
   const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
@@ -234,10 +234,14 @@
       ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
 
-    const linhas = loja.itens().map(({ produto: p, qtd }) => `• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`);
+    const itens = loja.itens();
+    // o WhatsApp só recebe texto: vai o link da foto, que ele costuma mostrar como prévia
+    const foto = (p) => (p.foto && /^https?:/.test(location.protocol) ? new URL(`images/produtos/${p.foto}.webp`, location.href).href : null);
+    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, foto(p) && `  Foto: ${foto(p)}`]).filter(Boolean);
+    const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
     const mensagem = [
-      `*Novo pedido ${numero}* — Volmaster Ferramentas`,
+      `*Novo pedido — ${titulo}*`,
       '',
       ...linhas,
       '',
@@ -252,6 +256,8 @@
       `WhatsApp: ${dados.telefone}`,
       `E-mail: ${dados.email}`,
       `Entrega: ${endereco}`,
+      '',
+      `Código do pedido: ${numero}`,
     ].filter((l) => l !== null).join('\n');
 
     if (!whatsapp) {
@@ -267,7 +273,7 @@
     conteudo.innerHTML = `
       <div class="confirmacao">
         <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-        <h3 tabindex="-1" id="confirmacao-titulo">Pedido ${numero} enviado!</h3>
+        <h3 tabindex="-1" id="confirmacao-titulo">Pedido enviado!</h3>
         <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>
         <p class="confirmacao__total">Total: <strong>${moeda(total)}</strong> · ${esc(pagamento)}</p>
         <div class="confirmacao__acoes">
