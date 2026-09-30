@@ -235,9 +235,10 @@
       : NOMES_PAGAMENTO[dados.pagamento];
 
     const itens = loja.itens();
-    // o WhatsApp só recebe texto: vai o link da foto, que ele costuma mostrar como prévia
-    const foto = (p) => (p.foto && /^https?:/.test(location.protocol) ? new URL(`images/produtos/${p.foto}.webp`, location.href).href : null);
-    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, foto(p) && `  Foto: ${foto(p)}`]).filter(Boolean);
+    // o WhatsApp só recebe texto: vai o link da página de prévia do produto
+    // (produto/<id>.html, gerada por ferramentas/gerar-previas.py), que ele mostra com foto e nome
+    const previa = (p) => (/^https?:/.test(location.protocol) ? new URL(`produto/${p.id}.html`, location.href).href : null);
+    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
     const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
     const mensagem = [

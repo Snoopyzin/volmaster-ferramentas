@@ -1,6 +1,8 @@
 /* =========================================================
    Volmaster Ferramentas — CATÁLOGO
    Edite aqui preços, nomes, categorias e fotos. O site se atualiza sozinho.
+   Depois de editar, rode  python ferramentas/gerar-previas.py  para atualizar
+   a prévia (foto + nome) que aparece no link do pedido no WhatsApp.
 
    Os NOMES abaixo foram escritos a partir das fotos. Confira e ajuste
    para o nome/aplicação correta de cada ferramenta (motor, modelo etc.).
