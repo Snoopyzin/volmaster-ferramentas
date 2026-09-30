@@ -77,7 +77,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-19', categoria: 'chaves', tarefas: ['porca', 'sacar'], nome: 'Ferramenta especial desenvolvida para facilitar a remoção e o torque do tubo de lubrificação das transmissões Volvo I-Shift. Além disso, a mesma ferramenta pode ser utilizada para remover e aplicar o torque na válvula de alívio do bloco do motor Volvo D13.', preco: 360, foto: FOTO(19) },
 
   // ---------- Suportes, travas e gabaritos ----------
-  { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta de tirar o balanceiro', tipo: 'Travessa de içamento com olhais', preco: 871.90, foto: FOTO(3) },
+  { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para fixar o eixo de balancins durante os serviços de manutenção dos motores Volvo D12 e D13.', preco: 871.90, foto: FOTO(3) },
   { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta pra erguer o grupo redutor', tipo: 'Olhal de içamento com base roscada', preco: 565, foto: FOTO(4) },
   { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de tirar os eixos da caixa', tipo: 'Haste com olhal e fuso roscado', preco: 548, foto: FOTO(2) },
   // fora do site por enquanto: { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
