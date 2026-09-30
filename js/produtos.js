@@ -86,7 +86,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-29', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte especial desenvolvido para a fixação das transmissões Volvo I-Shift e VT no cavalete de recondicionamento.', preco: 1795, foto: FOTO(29) },
   { ref: 'VM-30', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte especial desenvolvido para a fixação do motor Volvo VM D8K no cavalete de recondicionamento.', preco: 2590, foto: FOTO(30) },
   { ref: 'VM-31', categoria: 'suportes', tarefas: ['travar'], nome: 'Suporte especial desenvolvido para a fixação dos motores Volvo D13 A/C/K no cavalete de recondicionamento.', preco: 2100, foto: FOTO(31) },
-  { ref: 'VM-32', categoria: 'suportes', tarefas: ['travar', 'sacar'], nome: 'Ferramenta H', tipo: 'Bloco de fixação com dois fusos', preco: 1750, foto: FOTO(32) },
+  { ref: 'VM-32', categoria: 'suportes', tarefas: ['travar', 'sacar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção de rolamentos e engrenagens utilizando bomba hidráulica.', preco: 1750, foto: FOTO(32) },
   { ref: 'VM-33', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta meia-lua pra sacar as engrenagens do eixo', tipo: 'Chapa de apoio com recorte meia-lua', preco: 1829, foto: FOTO(33) },
 
   // ---------- Hidráulica e diversos ----------
