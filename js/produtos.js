@@ -78,8 +78,8 @@ window.VOLMASTER_PRODUTOS = [
 
   // ---------- Suportes, travas e gabaritos ----------
   { ref: 'VM-03', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para fixar o eixo de balancins durante os serviços de manutenção dos motores Volvo D12 e D13.', preco: 871.90, foto: FOTO(3) },
-  { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta pra erguer o grupo redutor', tipo: 'Olhal de içamento com base roscada', preco: 565, foto: FOTO(4) },
-  { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de tirar os eixos da caixa', tipo: 'Haste com olhal e fuso roscado', preco: 548, foto: FOTO(2) },
+  { ref: 'VM-04', categoria: 'suportes', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do grupo redutor da transmissão, proporcionando maior segurança e estabilidade durante a desmontagem.', preco: 565, foto: FOTO(4) },
+  { ref: 'VM-02', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção dos eixos das transmissões Volvo I-Shift e VT.', preco: 548, foto: FOTO(2) },
   // fora do site por enquanto: { ref: 'VM-08', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta pra pôr o motor no ponto do Scania Super', tipo: 'Gabarito de chapa com recortes', preco: 687, foto: FOTO(8) },
   { ref: 'VM-09', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta de sacar o rolamento do eixo piloto', tipo: 'Anel de fixação bipartido com parafusos', preco: 1662, foto: FOTO(9) },
   { ref: 'VM-12', categoria: 'suportes', tarefas: ['travar'], nome: 'Ferramenta de guiar cabeçote do D12D', tipo: 'Barra de travamento com furos passantes', preco: 649, foto: FOTO(12) },
