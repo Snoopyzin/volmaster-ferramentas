@@ -592,7 +592,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .os__cabeca { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-bottom: 16px; border-bottom: 3px double #9fb0c2; }
 .os__tipo { font: 800 12px var(--titulo); font-stretch: 125%; letter-spacing: .2em; text-transform: uppercase; color: var(--azul); }
 .os__titulo { margin-top: 6px; font: 900 clamp(20px, 2.6vw, 30px)/1.1 var(--titulo); font-stretch: 115%; text-transform: uppercase; }
-.os__globo { width: 64px; height: auto; flex-shrink: 0; filter: brightness(0) saturate(100%) invert(14%) sepia(62%) saturate(2400%) hue-rotate(214deg) brightness(88%); opacity: .85; }
+.os__globo { width: clamp(110px, 16vw, 170px); height: auto; flex-shrink: 0; filter: brightness(0) saturate(100%) invert(14%) sepia(62%) saturate(2400%) hue-rotate(214deg) brightness(88%); opacity: .85; }
 .os__dica { margin: 14px 0 6px; font: 700 22px 'Caveat', cursive; color: var(--azul); }
 .os__lista li { border-bottom: 1px solid #cfd8e0; }
 .tarefa {
