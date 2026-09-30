@@ -90,7 +90,7 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-33', categoria: 'suportes', tarefas: ['sacar'], nome: 'Ferramenta especial desenvolvida no formato meia-lua para auxiliar na remoção de engrenagens do eixo utilizando prensa hidráulica.', preco: 1829, foto: FOTO(33) },
 
   // ---------- Hidráulica e diversos ----------
-  { ref: 'VM-23', categoria: 'hidraulica', tarefas: ['prensar', 'sacar'], nome: 'Bomba e pistão hidráulico', tipo: 'Bomba manual com cilindro, mangueira e manômetro', preco: 7890, foto: FOTO(23) },
+  { ref: 'VM-23', categoria: 'hidraulica', tarefas: ['prensar', 'sacar'], nome: 'Conjunto hidráulico desenvolvido para auxiliar na remoção e instalação de componentes mecânicos que exigem aplicação de força controlada.', preco: 7890, foto: FOTO(23) },
   { ref: 'VM-21', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Ferramenta de teste de luva de bico D13A e D13C', tipo: 'Mangueira de teste com engates rápidos', preco: 299, foto: FOTO(21) },
   { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o virabrequim', tipo: 'Alça curvada de aço', preco: 383, foto: FOTO(17) },
   { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta de erguer o comando', tipo: 'Alça curvada de aço — modelo alto', preco: 333, foto: FOTO(24) },
