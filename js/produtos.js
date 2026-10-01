@@ -99,6 +99,14 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do virabrequim durante os serviços de desmontagem do motor.', preco: 591, foto: FOTO(17) },
   { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do comando de válvulas durante os serviços de desmontagem e manutenção do motor.', preco: 411, foto: FOTO(24) },
 
+  // ---------- Novas (nomes provisórios, sem preço — ajustar depois) ----------
+  { ref: 'VM-41', categoria: 'suportes', tarefas: [], nome: 'Flange roscado com 4 furos de fixação', preco: null, foto: 'vm-41', fotos: ['vm-41-2'] },
+  { ref: 'VM-42', categoria: 'suportes', tarefas: [], nome: 'Barra de travamento com pino recartilhado', preco: null, foto: 'vm-42', fotos: ['vm-42-2'] },
+  { ref: 'VM-43', categoria: 'hidraulica', tarefas: [], nome: 'Mangueira com manômetro para teste de pressão', preco: null, foto: 'vm-43' },
+  { ref: 'VM-44', categoria: 'suportes', tarefas: [], nome: 'Par de prisioneiros guia', preco: null, foto: 'vm-44' },
+  { ref: 'VM-45', categoria: 'hidraulica', tarefas: [], nome: 'Kit com pera de sucção e frasco', preco: null, foto: 'vm-45' },
+  { ref: 'VM-46', categoria: 'hidraulica', tarefas: [], nome: 'Placa de teste em acrílico com engates rápidos', preco: null, foto: 'vm-46' },
+
   // ---------- Diagnóstico e programação ----------
   { ref: 'NOTEBOOK-VOCOM1', categoria: 'diagnostico', tarefas: [], nome: 'Notebook com interface de diagnóstico Vocom I e cabos, pronto para atender caminhões Volvo.', preco: null, foto: 'notebook-vocom1', fotos: ['notebook-vocom1-2', 'notebook-vocom1-3', 'notebook-vocom1-4'] },
   { ref: 'NOTEBOOK-VOCOM2', categoria: 'diagnostico', tarefas: [], nome: 'Notebook com interface de diagnóstico Vocom II e cabos, pronto para atender caminhões Volvo.', preco: null, foto: 'notebook-vocom2', fotos: ['notebook-vocom2-2', 'notebook-vocom2-3', 'notebook-vocom2-4'] },
