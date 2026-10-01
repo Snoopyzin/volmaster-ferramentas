@@ -220,12 +220,6 @@
 
   /* ---------- Envio do pedido ---------- */
 
-  const numeroPedido = () => {
-    const d = new Date();
-    const data = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-    return `${data}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-  };
-
   const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
 
   // cada produto vai para o WhatsApp do seu atendimento (loja ou Volmaster Suporte)
@@ -238,7 +232,6 @@
 
   function enviaPedido(form) {
     const dados = Object.fromEntries(new FormData(form));
-    const numero = numeroPedido();
     const pagamento = dados.pagamento === 'cartao'
       ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
@@ -268,8 +261,6 @@
         `WhatsApp: ${dados.telefone}`,
         `E-mail: ${dados.email}`,
         `Entrega: ${endereco}`,
-        '',
-        `Código do pedido: ${numero}`,
       ].filter((l) => l !== null).join('\n');
       return { mensagem, total, frete };
     }
