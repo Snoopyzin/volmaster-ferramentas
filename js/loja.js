@@ -46,12 +46,14 @@
   };
   const svgIcone = (nome) => `<svg class="icone" viewBox="0 0 64 64" aria-hidden="true" focusable="false">${ICONES[nome] || ICONES.chave}</svg>`;
 
+  const srcsetGrande = (base) => `${base}-p.webp 600w, ${base}.webp 1200w`;
+
   function midia(p, comAlt = true, grande = false) {
     const alt = comAlt ? esc(p.nome) : '';
     if (!p.foto) return `<span class="arte">${svgIcone(tarefaPorId[p.tarefas?.[0]]?.icone)}</span>`;
     const base = `images/produtos/${esc(p.foto)}`;
     return grande
-      ? `<img src="${base}.webp" srcset="${base}-p.webp 600w, ${base}.webp 1200w" sizes="(min-width: 900px) 55vw, 100vw" alt="${alt}" decoding="async">`
+      ? `<img src="${base}.webp" srcset="${srcsetGrande(base)}" sizes="(min-width: 900px) 55vw, 100vw" alt="${alt}" decoding="async">`
       : `<img src="${base}-p.webp" alt="${alt}" loading="lazy" decoding="async" width="600" height="273">`;
   }
 
@@ -292,8 +294,12 @@
     const p = produtoPorId[id];
     if (!p) return;
     const restam = temPreco(p) && p.estoque > 0 && p.estoque <= 5 ? `<p class="detalhe__estoque">Restam só ${p.estoque} unidades</p>` : '';
+    const fotos = [p.foto, ...(p.fotos || [])].filter(Boolean);
+    const galeria = fotos.length > 1
+      ? `<div class="galeria" role="group" aria-label="Fotos do produto">${fotos.map((f, i) => `<button type="button" class="galeria__mini" data-foto="${esc(f)}" aria-pressed="${i === 0}" aria-label="Foto ${i + 1} de ${fotos.length}"><img src="images/produtos/${esc(f)}-p.webp" alt="" loading="lazy" decoding="async" width="600" height="273"></button>`).join('')}</div>`
+      : '';
     conteudoDetalhe.innerHTML = `
-      <div class="detalhe__midia">${midia(p, true, true)}${selo(p)}</div>
+      <div class="detalhe__midia${galeria ? ' detalhe__midia--galeria' : ''}">${midia(p, true, true)}${selo(p)}${galeria}</div>
       <div class="detalhe__info">
         <h2 class="detalhe__nome" id="detalhe-nome">${esc(p.nome)}</h2>
         ${p.tipo ? `<p class="detalhe__tipo">${esc(p.tipo)}</p>` : ''}
@@ -308,6 +314,17 @@
     window.VolmasterPaineis.abrir('detalhe', gatilho);
     history.replaceState(null, '', `#produto=${id}`);
   }
+
+  // troca a foto grande ao clicar numa miniatura da galeria
+  conteudoDetalhe.addEventListener('click', (e) => {
+    const mini = e.target.closest('[data-foto]');
+    if (!mini) return;
+    const base = `images/produtos/${esc(mini.dataset.foto)}`;
+    const img = $('.detalhe__midia > img', conteudoDetalhe);
+    img.srcset = srcsetGrande(base);
+    img.src = `${base}.webp`;
+    $$('[data-foto]', conteudoDetalhe).forEach((b) => b.setAttribute('aria-pressed', String(b === mini)));
+  });
 
   detalhe.addEventListener('painelfechado', () => {
     if (location.hash.startsWith('#produto=')) history.replaceState(null, '', location.pathname + location.search);

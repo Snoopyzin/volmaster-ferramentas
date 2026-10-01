@@ -17,6 +17,7 @@
    estoque      opcional — quantidade disponível (0 = esgotado)
    tipo         opcional — linha cinza embaixo do nome
    foto         nome do arquivo em images/produtos/ (sem .webp)
+   fotos        opcional — fotos extras da galeria na página do produto
    aplicacao    opcional — motores/veículos em que a ferramenta é usada
    resumo       opcional — texto da página do produto
    destaques    opcional — lista de pontos fortes
@@ -37,6 +38,7 @@ window.VOLMASTER_CATEGORIAS = [
   { id: 'chaves',       nome: 'Chaves e soquetes especiais' },
   { id: 'suportes',     nome: 'Suportes, travas e gabaritos' },
   { id: 'hidraulica',   nome: 'Hidráulica e diversos' },
+  { id: 'diagnostico',  nome: 'Diagnóstico e programação' },
 ];
 
 // "O que você precisa resolver?" — atalhos que filtram o catálogo pela tarefa
@@ -96,4 +98,11 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-21', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Ferramenta especial desenvolvida para realizar o teste de fuga de compressão no sistema de combustível através da luva do bico injetor dos motores Volvo D13A e D13C.', preco: 349, foto: FOTO(21) },
   { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do virabrequim durante os serviços de desmontagem do motor.', preco: 591, foto: FOTO(17) },
   { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do comando de válvulas durante os serviços de desmontagem e manutenção do motor.', preco: 411, foto: FOTO(24) },
+
+  // ---------- Diagnóstico e programação ----------
+  { ref: 'NOTEBOOK-VOCOM1', categoria: 'diagnostico', tarefas: [], nome: 'Notebook com interface de diagnóstico Vocom I e cabos, pronto para atender caminhões Volvo.', preco: null, foto: 'notebook-vocom1', fotos: ['notebook-vocom1-2', 'notebook-vocom1-3', 'notebook-vocom1-4'] },
+  { ref: 'NOTEBOOK-VOCOM2', categoria: 'diagnostico', tarefas: [], nome: 'Notebook com interface de diagnóstico Vocom II e cabos, pronto para atender caminhões Volvo.', preco: null, foto: 'notebook-vocom2', fotos: ['notebook-vocom2-2', 'notebook-vocom2-3', 'notebook-vocom2-4'] },
+  { ref: 'THE-GENIUS', categoria: 'diagnostico', tarefas: [], nome: 'The Genius Dimsport — tablet para reprogramação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'the-genius', fotos: ['the-genius-2', 'the-genius-3', 'the-genius-4', 'the-genius-5'] },
+  { ref: 'NEW-GENIUS', categoria: 'diagnostico', tarefas: [], nome: 'New Genius Dimsport — console para leitura e gravação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'new-genius', fotos: ['new-genius-2', 'new-genius-3'] },
+  { ref: 'NEW-TRASDATA', categoria: 'diagnostico', tarefas: [], nome: 'New Trasdata Dimsport — ferramenta de bancada para leitura e gravação de módulos, com maleta e cabos.', preco: null, foto: 'new-trasdata', fotos: ['new-trasdata-2', 'new-trasdata-3'] },
 ].map((p) => ({ ...p, id: p.ref.toLowerCase() }));
