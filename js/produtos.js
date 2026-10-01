@@ -9,7 +9,7 @@
 
    ref          código interno do produto (não aparece no site)
    preco        preço à vista (Pix ou cartão)
-                null = "Sob consulta" (vai pelo carrinho como "aguardando orçamento")
+                null = "Sob consulta" (botão "Solicitar orçamento" abre o WhatsApp)
    precoAntigo  opcional — preço riscado (o produto aparece em "Ofertas")
    selo         opcional — etiqueta no card (ex.: 'Mais vendido')
    categoria    id de uma categoria em VOLMASTER_CATEGORIAS

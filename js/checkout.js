@@ -2,8 +2,6 @@
    Volmaster Ferramentas — checkout
    Coleta dados, entrega e forma de pagamento, calcula o total e envia
    o pedido para o WhatsApp da loja (CONFIG.whatsapp em js/produtos.js).
-   Produtos sem preço também passam pelo carrinho e vão na mensagem
-   marcados como "Aguardando orçamento".
    Para cobrar online (Pix automático, cartão), troque enviaPedido()
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
@@ -62,33 +60,24 @@
     const sub = loja.subtotal();
     const frete = loja.frete(sub);
     const desconto = pagamento === 'pix' ? sub * descontoPix / 100 : 0;
-    const aOrcar = loja.aguardandoOrcamento();
-    return { sub, frete, desconto, aOrcar, total: sub + (frete || 0) - desconto };
+    return { sub, frete, desconto, total: sub + (frete || 0) - desconto };
   }
 
-  const AGUARDANDO = 'Aguardando orçamento';
-  // total para mostrar: só orçamento, valor + orçamento, ou valor
-  const textoTotal = ({ sub, frete, total, aOrcar }) => (aOrcar && !sub
-    ? AGUARDANDO
-    : `${moeda(total)}${frete === null ? ' + frete' : ''}${aOrcar ? ' + itens aguardando orçamento' : ''}`);
-
   function resumo(pagamento) {
-    const t = totais(pagamento);
-    const { sub, frete, desconto, aOrcar } = t;
+    const { sub, frete, desconto, total } = totais(pagamento);
     return `
       <ul class="resumo__itens">
         ${loja.itens().map(({ produto: p, qtd }) => `
           <li>
             <span class="resumo__midia">${loja.midia(p, false)}<span class="resumo__qtd">${qtd}</span></span>
             <span class="resumo__nome">${esc(p.nome)}</span>
-            <span class="resumo__valor">${loja.temPreco(p) ? moeda(p.preco * qtd) : 'A orçar'}</span>
+            <span class="resumo__valor">${moeda(p.preco * qtd)}</span>
           </li>`).join('')}
       </ul>
-      ${sub ? `<div class="carrinho__linha"><span>Subtotal</span><span>${moeda(sub)}</span></div>` : ''}
+      <div class="carrinho__linha"><span>Subtotal</span><span>${moeda(sub)}</span></div>
       <div class="carrinho__linha"><span>Frete</span><span>${loja.textoFrete(frete)}</span></div>
       ${desconto ? `<div class="carrinho__linha carrinho__linha--desconto"><span>Desconto Pix (${descontoPix}%)</span><span>− ${moeda(desconto)}</span></div>` : ''}
-      <div class="carrinho__total"><span>Total</span><strong>${textoTotal(t)}</strong></div>
-      ${aOrcar ? '<p class="checkout__nota">Os itens sem preço vão no pedido como "aguardando orçamento": a gente passa o valor no WhatsApp.</p>' : ''}
+      <div class="carrinho__total"><span>Total${frete === null ? ' <small>+ frete</small>' : ''}</span><strong>${moeda(total)}</strong></div>
       ${frete === null ? '<p class="checkout__nota">O frete é calculado pelo CEP e confirmado no WhatsApp antes do pagamento.</p>' : ''}`;
   }
 
@@ -233,8 +222,7 @@
 
   function enviaPedido(form) {
     const dados = Object.fromEntries(new FormData(form));
-    const t = totais(dados.pagamento);
-    const { sub, frete, desconto, aOrcar } = t;
+    const { sub, frete, desconto, total } = totais(dados.pagamento);
     const pagamento = dados.pagamento === 'cartao'
       ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
@@ -243,20 +231,18 @@
     // o WhatsApp só recebe texto: vai o link da página de prévia do produto
     // (produto/<id>.html, gerada por ferramentas/gerar-previas.py), que ele mostra com foto e nome
     const previa = (p) => new URL(`produto/${p.id}.html`, site || location.href).href;
-    // sem preço: vai em negrito (*...*) para a loja ver que precisa mandar o orçamento
-    const valorItem = (p, qtd) => (loja.temPreco(p) ? moeda(p.preco * qtd) : `*${AGUARDANDO.toUpperCase()}*`);
-    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${valorItem(p, qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
+    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, `  Ver a peça: ${previa(p)}`]);
     const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
     const mensagem = [
-      `*${aOrcar && !sub ? 'Pedido de orçamento' : 'Novo pedido'} — ${titulo}*`,
+      `*Novo pedido — ${titulo}*`,
       '',
       ...linhas,
       '',
-      sub ? `Subtotal: ${moeda(sub)}` : null,
+      `Subtotal: ${moeda(sub)}`,
       `Frete: ${loja.textoFrete(frete)}`,
       desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
-      `*Total: ${textoTotal(t)}*`,
+      `*Total: ${moeda(total)}${frete === null ? ' + frete' : ''}*`,
       `Pagamento: ${pagamento}`,
       '',
       `Cliente: ${dados.nome}`,
@@ -277,13 +263,12 @@
     const link = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`;
     window.open(link, '_blank', 'noopener');
 
-    const proximo = aOrcar ? 'o orçamento' : dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento';
     conteudo.innerHTML = `
       <div class="confirmacao">
         <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
         <h3 tabindex="-1" id="confirmacao-titulo">Pedido enviado!</h3>
-        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${proximo}.</p>
-        <p class="confirmacao__total">Total: <strong>${textoTotal(t)}</strong> · ${esc(pagamento)}</p>
+        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>
+        <p class="confirmacao__total">Total: <strong>${moeda(total)}${frete === null ? ' + frete' : ''}</strong> · ${esc(pagamento)}</p>
         <div class="confirmacao__acoes">
           <a class="btn btn--primario" href="${link}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>
           <button class="btn btn--secundario" type="button" data-fecha-checkout>Continuar comprando</button>

@@ -19,8 +19,8 @@
   const normaliza = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const temPreco = (p) => typeof p.preco === 'number';
   const estoque = (p) => p.estoque ?? 999;
-  // sem preço também vai pro carrinho: segue no pedido como "aguardando orçamento"
-  const disponivel = (p) => estoque(p) > 0;
+  const disponivel = (p) => temPreco(p) && estoque(p) > 0;
+  const semPonto = (t) => t.replace(/\.$/, '');
   const itensTexto = (n) => `${n} ${n === 1 ? 'item' : 'itens'}`;
   const linkWhats = (texto) => (whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(texto)}` : '#');
 
@@ -67,7 +67,7 @@
   }
 
   function preco(p) {
-    if (!temPreco(p)) return '<div class="produto__precos"><p class="produto__preco produto__preco--consulta">Preço sob consulta</p><p class="produto__parcela">Solicite o orçamento e a gente passa o valor no WhatsApp</p></div>';
+    if (!temPreco(p)) return '<div class="produto__precos"><p class="produto__preco produto__preco--consulta">Preço sob consulta</p><p class="produto__parcela">A gente passa o valor no WhatsApp</p></div>';
     return `<div class="produto__precos">
         ${p.precoAntigo ? `<s><span class="sr-only">de </span>${moeda(p.precoAntigo)}</s>` : ''}
         <p class="produto__preco"><strong>${moeda(p.preco)}</strong></p>
@@ -88,10 +88,9 @@
   const salva = () => { try { localStorage.setItem(CHAVE, JSON.stringify(carrinho)); } catch { /* sem armazenamento: segue só na sessão */ } };
 
   const unidades = () => Object.values(carrinho).reduce((s, q) => s + q, 0);
-  const subtotal = () => Object.entries(carrinho).reduce((s, [id, q]) => s + (temPreco(produtoPorId[id]) ? produtoPorId[id].preco * q : 0), 0);
-  const aguardandoOrcamento = () => Object.keys(carrinho).some((id) => !temPreco(produtoPorId[id]));
+  const subtotal = () => Object.entries(carrinho).reduce((s, [id, q]) => s + produtoPorId[id].preco * q, 0);
   // null = frete a combinar
-  const frete = (sub = subtotal()) => (!Object.keys(carrinho).length ? 0 : freteGratisAcima && sub >= freteGratisAcima ? 0 : freteFixo || null);
+  const frete = (sub = subtotal()) => (!sub ? 0 : freteGratisAcima && sub >= freteGratisAcima ? 0 : freteFixo || null);
   const textoFrete = (f) => (f === null ? 'A combinar' : f ? moeda(f) : 'Grátis');
 
   function seletorQtd(p, q, extra = '') {
@@ -103,9 +102,11 @@
   }
 
   function acao(p) {
+    if (!temPreco(p)) {
+      return `<a class="btn-add btn-add--whats" href="${linkWhats(`Olá! Quero um orçamento da ferramenta ${semPonto(p.nome)}.`)}" target="_blank" rel="noopener">Solicitar orçamento<span class="sr-only"> de ${esc(p.nome)} pelo WhatsApp</span></a>`;
+    }
     if (!(estoque(p) > 0)) return '<button class="btn-add" type="button" disabled>Esgotado</button>';
     if (carrinho[p.id]) return seletorQtd(p, carrinho[p.id]);
-    if (!temPreco(p)) return `<button class="btn-add btn-add--whats" type="button" data-f="add">Solicitar orçamento<span class="sr-only">: ${esc(p.nome)}</span></button>`;
     return `<button class="btn-add" type="button" data-f="add">Adicionar ao carrinho<span class="sr-only">: ${esc(p.nome)}</span></button>`;
   }
 
@@ -167,7 +168,7 @@
     else if (!antes && qtd) {
       mostraToast(freteGratisAcima && !gratis
         ? `Adicionado! Faltam ${moeda(freteGratisAcima - sub)} para o frete grátis.`
-        : temPreco(p) ? 'Adicionado ao carrinho.' : 'Adicionado ao carrinho para orçamento.');
+        : 'Adicionado ao carrinho.');
     } else if (qtd === estoque(p) && qtd > antes) mostraToast(`Temos só ${estoque(p)} em estoque.`);
   }
 
@@ -193,8 +194,8 @@
       <div class="item__midia">${midia(p, false)}</div>
       <div class="item__info">
         <p class="item__nome">${esc(p.nome)}</p>
-        <p class="item__un">${temPreco(p) ? `${moeda(p.preco)} / un.` : 'Preço sob consulta'}</p>
-        <div class="item__linha">${seletorQtd(p, q, 'qtd--mini')}<strong>${temPreco(p) ? moeda(p.preco * q) : 'A orçar'}</strong></div>
+        <p class="item__un">${moeda(p.preco)} / un.</p>
+        <div class="item__linha">${seletorQtd(p, q, 'qtd--mini')}<strong>${moeda(p.preco * q)}</strong></div>
       </div>
       <button class="item__remover" type="button" data-f="remover" aria-label="Remover ${esc(p.nome)} do carrinho">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -224,10 +225,9 @@
 
     comFoco(lista, () => { lista.innerHTML = itens.map(([id, q]) => itemCarrinho(id, q)).join(''); });
     vazio.hidden = itens.length > 0;
-    const aOrcar = aguardandoOrcamento();
-    campoSubtotal.textContent = aOrcar && !sub ? 'A orçar' : `${moeda(sub)}${aOrcar ? ' + orçamento' : ''}`;
+    campoSubtotal.textContent = moeda(sub);
     campoFrete.textContent = itens.length ? textoFrete(f) : '—';
-    campoTotal.textContent = aOrcar && !sub ? 'A orçar' : `${moeda(t)}${aOrcar ? ' + orçamento' : ''}`;
+    campoTotal.textContent = moeda(t);
     campoPix.textContent = itens.length && descontoPix ? `ou ${moeda(t - sub * descontoPix / 100)} no Pix (${descontoPix}% off)` : '';
     finalizar.disabled = !itens.length;
     esvaziar.hidden = !itens.length;
@@ -279,7 +279,7 @@
     const secao = (titulo, corpo) => `<section class="detalhe__secao"><h3>${esc(titulo)}</h3>${corpo}</section>`;
     const tarefas = (p.tarefas || []).map((id) => tarefaPorId[id]).filter(Boolean);
     const duvida = whatsapp
-      ? `<a class="detalhe__duvida" href="${linkWhats(`Olá! Tenho uma dúvida sobre a ferramenta ${p.nome}.`)}" target="_blank" rel="noopener">Ficou na dúvida se serve no seu motor? Manda uma mensagem que a gente confere <span aria-hidden="true">→</span></a>`
+      ? `<a class="detalhe__duvida" href="${linkWhats(`Olá! Tenho uma dúvida sobre a ferramenta ${semPonto(p.nome)}.`)}" target="_blank" rel="noopener">Ficou na dúvida se serve no seu motor? Manda uma mensagem que a gente confere <span aria-hidden="true">→</span></a>`
       : '';
     return [
       p.resumo && `<p class="detalhe__resumo">${esc(p.resumo)}</p>`,
@@ -385,7 +385,7 @@
       })
       .filter((r) => r.nota > 0);
 
-    const semPreco = (p) => (temPreco(p) && disponivel(p) ? 0 : 1);
+    const semPreco = (p) => (disponivel(p) ? 0 : 1);
     const criterios = {
       relevancia: (a, b) => b.nota - a.nota || a.i - b.i,
       menor: (a, b) => semPreco(a.p) - semPreco(b.p) || (a.p.preco ?? 0) - (b.p.preco ?? 0) || a.i - b.i,
@@ -462,8 +462,6 @@
     },
     itens: () => Object.entries(carrinho).map(([id, qtd]) => ({ produto: produtoPorId[id], qtd })),
     subtotal,
-    aguardandoOrcamento,
-    temPreco,
     frete,
     textoFrete,
     midia,
