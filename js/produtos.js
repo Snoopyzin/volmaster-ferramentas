@@ -99,11 +99,11 @@ window.VOLMASTER_PRODUTOS = [
   { ref: 'VM-17', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do virabrequim durante os serviços de desmontagem do motor.', preco: 591, foto: FOTO(17) },
   { ref: 'VM-24', categoria: 'hidraulica', tarefas: ['icar'], nome: 'Ferramenta especial desenvolvida para auxiliar na remoção do comando de válvulas durante os serviços de desmontagem e manutenção do motor.', preco: 411, foto: FOTO(24) },
 
-  // ---------- Novas (nomes provisórios, sem preço — ajustar depois) ----------
-  { ref: 'VM-41', categoria: 'suportes', tarefas: [], nome: 'Flange roscado com 4 furos de fixação', preco: null, foto: 'vm-41', fotos: ['vm-41-2'] },
-  { ref: 'VM-42', categoria: 'suportes', tarefas: [], nome: 'Barra de travamento com pino recartilhado', preco: null, foto: 'vm-42', fotos: ['vm-42-2'] },
-  { ref: 'VM-43', categoria: 'hidraulica', tarefas: [], nome: 'Mangueira com manômetro para teste de pressão', preco: null, foto: 'vm-43' },
-  { ref: 'VM-44', categoria: 'suportes', tarefas: [], nome: 'Par de prisioneiros guia', preco: null, foto: 'vm-44' },
+  // ---------- Novas (sem preço — ajustar depois; VM-45 e VM-46 com nome provisório) ----------
+  { ref: 'VM-41', categoria: 'extratores', tarefas: ['sacar'], nome: 'Ferramenta especial com pistão e bomba hidráulica, desenvolvida para facilitar a remoção do flange das transmissões Volvo I-Shift.', preco: null, foto: 'vm-41', fotos: ['vm-41-2'] },
+  { ref: 'VM-42', categoria: 'suportes', tarefas: [], nome: 'Ferramenta especial desenvolvida para ser utilizada em conjunto com relógio comparador, permitindo medir a altura da camisa de cilindro em relação à face do bloco dos motores Volvo.', preco: null, foto: 'vm-42', fotos: ['vm-42-2'] },
+  { ref: 'VM-43', categoria: 'hidraulica', tarefas: ['prensar'], nome: 'Ferramenta desenvolvida para realizar o teste de pressão no sistema de escape dos veículos Volvo Euro 6, auxiliando na avaliação das condições do catalisador.', preco: null, foto: 'vm-43' },
+  { ref: 'VM-44', categoria: 'suportes', tarefas: [], nome: 'Par de prisioneiros desenvolvido para auxiliar na instalação do seletor de mudanças das transmissões Volvo I-Shift.', preco: null, foto: 'vm-44' },
   { ref: 'VM-45', categoria: 'hidraulica', tarefas: [], nome: 'Kit com pera de sucção e frasco', preco: null, foto: 'vm-45' },
   { ref: 'VM-46', categoria: 'hidraulica', tarefas: [], nome: 'Placa de teste em acrílico com engates rápidos', preco: null, foto: 'vm-46' },
 
