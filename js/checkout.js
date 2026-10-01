@@ -2,11 +2,13 @@
    Volmaster Ferramentas — checkout
    Coleta dados, entrega e forma de pagamento, calcula o total e envia
    o pedido para o WhatsApp da loja (CONFIG.whatsapp em js/produtos.js).
+   Produtos com atendimento: 'suporte' vão para o CONFIG.whatsappSuporte;
+   se o carrinho misturar os dois, o pedido é dividido em duas mensagens.
    Para cobrar online (Pix automático, cartão), troque enviaPedido()
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
 (() => {
-  const { whatsapp, descontoPix = 0 } = window.VOLMASTER_CONFIG;
+  const { whatsapp, whatsappSuporte, descontoPix = 0 } = window.VOLMASTER_CONFIG;
   const loja = window.VolmasterLoja;
   const { moeda, esc } = loja;
   const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
@@ -56,8 +58,8 @@
 
   const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
-  function totais(pagamento) {
-    const sub = loja.subtotal();
+  function totais(pagamento, itens = loja.itens()) {
+    const sub = itens.reduce((s, { produto: p, qtd }) => s + p.preco * qtd, 0);
     const frete = loja.frete(sub);
     const desconto = pagamento === 'pix' ? sub * descontoPix / 100 : 0;
     return { sub, frete, desconto, total: sub + (frete || 0) - desconto };
@@ -226,59 +228,85 @@
 
   const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
 
+  // cada produto vai para o WhatsApp do seu atendimento (loja ou Volmaster Suporte)
+  const DESTINOS = {
+    loja: { numero: whatsapp, nome: 'Volmaster Ferramentas' },
+    suporte: { numero: whatsappSuporte || whatsapp, nome: 'Volmaster Suporte' },
+  };
+  const destinoDe = (p) => (p.atendimento === 'suporte' ? 'suporte' : 'loja');
+  const linkPedido = (numero, mensagem) => `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+
   function enviaPedido(form) {
     const dados = Object.fromEntries(new FormData(form));
-    const { sub, frete, desconto, total } = totais(dados.pagamento);
     const numero = numeroPedido();
     const pagamento = dados.pagamento === 'cartao'
       ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
 
-    const itens = loja.itens();
     // o WhatsApp só recebe texto: vai o link da página de prévia do produto
     // (produto/<id>.html, gerada por ferramentas/gerar-previas.py), que ele mostra com foto e nome
     const previa = (p) => (/^https?:/.test(location.protocol) ? new URL(`produto/${p.id}.html`, location.href).href : null);
-    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
-    const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
-    const mensagem = [
-      `*Novo pedido — ${titulo}*`,
-      '',
-      ...linhas,
-      '',
-      `Subtotal: ${moeda(sub)}`,
-      `Frete: ${loja.textoFrete(frete)}`,
-      desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
-      `*Total: ${moeda(total)}${frete === null ? ' + frete' : ''}*`,
-      `Pagamento: ${pagamento}`,
-      '',
-      `Cliente: ${dados.nome}`,
-      `${digitos(dados.cpf).length === 14 ? 'CNPJ' : 'CPF'}: ${dados.cpf}`,
-      `WhatsApp: ${dados.telefone}`,
-      `E-mail: ${dados.email}`,
-      `Entrega: ${endereco}`,
-      '',
-      `Código do pedido: ${numero}`,
-    ].filter((l) => l !== null).join('\n');
+
+    function mensagemDe(itens) {
+      const { sub, frete, desconto, total } = totais(dados.pagamento, itens);
+      const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
+      const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
+      const mensagem = [
+        `*Novo pedido — ${titulo}*`,
+        '',
+        ...linhas,
+        '',
+        `Subtotal: ${moeda(sub)}`,
+        `Frete: ${loja.textoFrete(frete)}`,
+        desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
+        `*Total: ${moeda(total)}${frete === null ? ' + frete' : ''}*`,
+        `Pagamento: ${pagamento}`,
+        '',
+        `Cliente: ${dados.nome}`,
+        `${digitos(dados.cpf).length === 14 ? 'CNPJ' : 'CPF'}: ${dados.cpf}`,
+        `WhatsApp: ${dados.telefone}`,
+        `E-mail: ${dados.email}`,
+        `Entrega: ${endereco}`,
+        '',
+        `Código do pedido: ${numero}`,
+      ].filter((l) => l !== null).join('\n');
+      return { mensagem, total, frete };
+    }
+
+    const grupos = {};
+    for (const item of loja.itens()) (grupos[destinoDe(item.produto)] ||= []).push(item);
+    const envios = Object.entries(grupos).map(([destino, itens]) => ({ ...DESTINOS[destino], itens, ...mensagemDe(itens) }));
 
     if (!whatsapp) {
-      console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + mensagem);
+      console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + envios.map((e) => e.mensagem).join('\n\n'));
       loja.mostraToast('O recebimento de pedidos ainda está sendo configurado.');
       return;
     }
 
     const { pagamento: _p, ...cliente } = dados;
     try { localStorage.setItem(CHAVE_DADOS, JSON.stringify({ ...cliente, pagamento: dados.pagamento })); } catch { /* sem armazenamento */ }
-    window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`, '_blank', 'noopener');
+    // o navegador só deixa abrir uma janela por clique: a primeira mensagem abre sozinha, as outras ficam nos botões abaixo
+    window.open(linkPedido(envios[0].numero, envios[0].mensagem), '_blank', 'noopener');
+
+    const total = envios.reduce((s, e) => s + e.total, 0);
+    const semFrete = envios.some((e) => e.frete === null);
+    const dividido = envios.length > 1;
+    const botoes = dividido
+      ? envios.map((e, i) => `<a class="btn ${i ? 'btn--primario' : 'btn--secundario'}" href="${linkPedido(e.numero, e.mensagem)}" target="_blank" rel="noopener">${i ? 'Enviar' : 'Abrir de novo'} o pedido para ${esc(e.nome)}</a>`).join('')
+      : `<a class="btn btn--primario" href="${linkPedido(envios[0].numero, envios[0].mensagem)}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>`;
+    const explicacao = dividido
+      ? `<p>Seu pedido foi dividido: ${envios.map((e) => `<strong>${e.itens.length} ${e.itens.length === 1 ? 'produto' : 'produtos'}</strong> com o ${esc(e.nome)}`).join(' e ')}. Abrimos a primeira mensagem; <strong>toque no botão abaixo para enviar a outra</strong>.</p>`
+      : `<p>Abrimos o WhatsApp${envios[0].numero !== whatsapp ? ` do ${esc(envios[0].nome)}` : ''} com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>`;
 
     conteudo.innerHTML = `
       <div class="confirmacao">
         <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
         <h3 tabindex="-1" id="confirmacao-titulo">Pedido enviado!</h3>
-        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>
-        <p class="confirmacao__total">Total: <strong>${moeda(total)}</strong> · ${esc(pagamento)}</p>
+        ${explicacao}
+        <p class="confirmacao__total">Total: <strong>${moeda(total)}${semFrete ? ' + frete' : ''}</strong> · ${esc(pagamento)}</p>
         <div class="confirmacao__acoes">
-          <a class="btn btn--primario" href="https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>
+          ${botoes}
           <button class="btn btn--secundario" type="button" data-fecha-checkout>Continuar comprando</button>
         </div>
       </div>`;
