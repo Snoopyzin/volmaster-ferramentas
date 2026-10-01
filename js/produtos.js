@@ -22,15 +22,18 @@
    resumo       opcional — texto da página do produto
    destaques    opcional — lista de pontos fortes
    specs        opcional — lista de [característica, valor]
-   atendimento  opcional — 'suporte' manda o pedido desse produto para o
-                WhatsApp do Volmaster Suporte (whatsappSuporte) em vez da loja
+   atendimento  opcional — id de VOLMASTER_CONFIG.atendimentos: o pedido e o
+                orçamento desse produto vão para esse WhatsApp em vez da loja
    ========================================================= */
 
 window.VOLMASTER_CONFIG = {
   // Número que recebe os pedidos, só dígitos com DDI + DDD
   whatsapp: '5562984930079',
-  // Volmaster Suporte — recebe os pedidos dos produtos com atendimento: 'suporte'
-  whatsappSuporte: '5562981983660',
+  // outros WhatsApps que atendem produtos específicos (campo atendimento do produto)
+  atendimentos: {
+    suporte: { nome: 'Volmaster Suporte', whatsapp: '5562981983660' },
+    matheus: { nome: 'Matheus Volmaster', whatsapp: '5562992328375' },
+  },
   freteGratisAcima: 0,     // frete grátis a partir deste valor (0 = desligado)
   freteFixo: 0,            // 0 = frete combinado no WhatsApp após o pedido
   descontoPix: 0,          // % de desconto no Pix (0 = sem desconto)
@@ -114,7 +117,7 @@ window.VOLMASTER_PRODUTOS = [
   // ---------- Diagnóstico e programação ----------
   { ref: 'NOTEBOOK-VOCOM1', categoria: 'diagnostico', atendimento: 'suporte', tarefas: [], nome: 'Notebook completo com Tech Tool 2, interface de diagnóstico Vocom I importada e cabos, pronto para realizar diagnósticos e procedimentos em caminhões Volvo.', tipo: 'Uma solução completa para oficinas e profissionais que trabalham com diagnóstico, testes, calibrações e parametrizações dos sistemas eletrônicos dos caminhões Volvo.', preco: 15000, foto: 'notebook-vocom1', fotos: ['notebook-vocom1-2', 'notebook-vocom1-3', 'notebook-vocom1-4'] },
   { ref: 'NOTEBOOK-VOCOM2', categoria: 'diagnostico', atendimento: 'suporte', tarefas: [], nome: 'Notebook completo com Tech Tool 2, interface de diagnóstico Vocom 2 original e cabos, pronto para realizar diagnósticos e procedimentos em caminhões Volvo.', tipo: 'Uma solução completa para oficinas e profissionais que trabalham com diagnóstico, testes, calibrações e parametrizações dos sistemas eletrônicos dos caminhões Volvo.', preco: 25000, foto: 'notebook-vocom2', fotos: ['notebook-vocom2-2', 'notebook-vocom2-3', 'notebook-vocom2-4'] },
-  { ref: 'THE-GENIUS', categoria: 'diagnostico', tarefas: [], nome: 'The Genius Dimsport — tablet para reprogramação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'the-genius', fotos: ['the-genius-2', 'the-genius-3', 'the-genius-4', 'the-genius-5'] },
-  { ref: 'NEW-GENIUS', categoria: 'diagnostico', tarefas: [], nome: 'New Genius Dimsport — console para leitura e gravação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'new-genius', fotos: ['new-genius-2', 'new-genius-3'] },
-  { ref: 'NEW-TRASDATA', categoria: 'diagnostico', tarefas: [], nome: 'New Trasdata Dimsport — ferramenta de bancada para leitura e gravação de módulos, com maleta e cabos.', preco: null, foto: 'new-trasdata', fotos: ['new-trasdata-2', 'new-trasdata-3'] },
+  { ref: 'THE-GENIUS', categoria: 'diagnostico', atendimento: 'matheus', tarefas: [], nome: 'The Genius Dimsport — tablet para reprogramação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'the-genius', fotos: ['the-genius-2', 'the-genius-3', 'the-genius-4', 'the-genius-5'] },
+  { ref: 'NEW-GENIUS', categoria: 'diagnostico', atendimento: 'matheus', tarefas: [], nome: 'New Genius Dimsport — console para leitura e gravação de módulos pela tomada OBD, com maleta e cabos.', preco: null, foto: 'new-genius', fotos: ['new-genius-2', 'new-genius-3'] },
+  { ref: 'NEW-TRASDATA', categoria: 'diagnostico', atendimento: 'matheus', tarefas: [], nome: 'New Trasdata Dimsport — ferramenta de bancada para leitura e gravação de módulos, com maleta e cabos.', preco: null, foto: 'new-trasdata', fotos: ['new-trasdata-2', 'new-trasdata-3'] },
 ].map((p) => ({ ...p, id: p.ref.toLowerCase() }));

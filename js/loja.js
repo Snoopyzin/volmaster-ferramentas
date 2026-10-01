@@ -3,7 +3,7 @@
    Os dados ficam em js/produtos.js · o checkout fica em js/checkout.js
    ========================================================= */
 (() => {
-  const { freteGratisAcima = 0, freteFixo = 0, descontoPix = 0, whatsapp } = window.VOLMASTER_CONFIG;
+  const { freteGratisAcima = 0, freteFixo = 0, descontoPix = 0, whatsapp, atendimentos = {} } = window.VOLMASTER_CONFIG;
   const CATEGORIAS = window.VOLMASTER_CATEGORIAS;
   const TAREFAS = window.VOLMASTER_TAREFAS;
   const PRODUTOS = window.VOLMASTER_PRODUTOS;
@@ -21,7 +21,9 @@
   const estoque = (p) => p.estoque ?? 999;
   const disponivel = (p) => temPreco(p) && estoque(p) > 0;
   const itensTexto = (n) => `${n} ${n === 1 ? 'item' : 'itens'}`;
-  const linkWhats = (texto) => (whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(texto)}` : '#');
+  const linkWhats = (texto, numero = whatsapp) => (numero ? `https://wa.me/${numero}?text=${encodeURIComponent(texto)}` : '#');
+  // quem atende o produto: a loja ou um dos VOLMASTER_CONFIG.atendimentos
+  const contato = (p) => atendimentos[p.atendimento] || { nome: 'Volmaster Ferramentas', whatsapp };
 
   // regras comerciais nos textos da página
   $$('[data-frete-texto]').forEach((el) => {
@@ -102,7 +104,7 @@
 
   function acao(p) {
     if (!temPreco(p)) {
-      return `<a class="btn-add btn-add--whats" href="${linkWhats(`Olá! Quero um orçamento da ferramenta ${p.nome}.`)}" target="_blank" rel="noopener">Pedir orçamento<span class="sr-only"> de ${esc(p.nome)} pelo WhatsApp</span></a>`;
+      return `<a class="btn-add btn-add--whats" href="${linkWhats(`Olá! Quero um orçamento da ferramenta ${p.nome}.`, contato(p).whatsapp)}" target="_blank" rel="noopener">Pedir orçamento<span class="sr-only"> de ${esc(p.nome)} pelo WhatsApp</span></a>`;
     }
     if (!(estoque(p) > 0)) return '<button class="btn-add" type="button" disabled>Esgotado</button>';
     if (carrinho[p.id]) return seletorQtd(p, carrinho[p.id]);
@@ -462,6 +464,7 @@
     itens: () => Object.entries(carrinho).map(([id, qtd]) => ({ produto: produtoPorId[id], qtd })),
     subtotal,
     frete,
+    contato,
     textoFrete,
     midia,
     moeda,

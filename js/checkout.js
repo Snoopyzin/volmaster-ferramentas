@@ -2,13 +2,13 @@
    Volmaster Ferramentas — checkout
    Coleta dados, entrega e forma de pagamento, calcula o total e envia
    o pedido para o WhatsApp da loja (CONFIG.whatsapp em js/produtos.js).
-   Produtos com atendimento: 'suporte' vão para o CONFIG.whatsappSuporte;
-   se o carrinho misturar os dois, o pedido é dividido em duas mensagens.
+   Produtos com campo atendimento vão para o WhatsApp de CONFIG.atendimentos;
+   se o carrinho misturar atendimentos, o pedido é dividido, uma mensagem para cada.
    Para cobrar online (Pix automático, cartão), troque enviaPedido()
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
 (() => {
-  const { whatsapp, whatsappSuporte, descontoPix = 0 } = window.VOLMASTER_CONFIG;
+  const { whatsapp, descontoPix = 0 } = window.VOLMASTER_CONFIG;
   const loja = window.VolmasterLoja;
   const { moeda, esc } = loja;
   const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
@@ -222,12 +222,6 @@
 
   const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
 
-  // cada produto vai para o WhatsApp do seu atendimento (loja ou Volmaster Suporte)
-  const DESTINOS = {
-    loja: { numero: whatsapp, nome: 'Volmaster Ferramentas' },
-    suporte: { numero: whatsappSuporte || whatsapp, nome: 'Volmaster Suporte' },
-  };
-  const destinoDe = (p) => (p.atendimento === 'suporte' ? 'suporte' : 'loja');
   const linkPedido = (numero, mensagem) => `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
 
   function enviaPedido(form) {
@@ -266,8 +260,9 @@
     }
 
     const grupos = {};
-    for (const item of loja.itens()) (grupos[destinoDe(item.produto)] ||= []).push(item);
-    const envios = Object.entries(grupos).map(([destino, itens]) => ({ ...DESTINOS[destino], itens, ...mensagemDe(itens) }));
+    // cada produto vai para o WhatsApp de quem o atende (loja.contato)
+    for (const item of loja.itens()) (grupos[loja.contato(item.produto).whatsapp] ||= []).push(item);
+    const envios = Object.entries(grupos).map(([numero, itens]) => ({ numero, nome: loja.contato(itens[0].produto).nome, itens, ...mensagemDe(itens) }));
 
     if (!whatsapp) {
       console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + envios.map((e) => e.mensagem).join('\n\n'));
