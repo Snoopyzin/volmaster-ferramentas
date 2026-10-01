@@ -67,7 +67,7 @@
   }
 
   function preco(p) {
-    if (!temPreco(p)) return '<div class="produto__precos"><p class="produto__preco produto__preco--consulta">Preço sob consulta</p><p class="produto__parcela">Adicione ao carrinho e a gente passa o valor no WhatsApp</p></div>';
+    if (!temPreco(p)) return '<div class="produto__precos"><p class="produto__preco produto__preco--consulta">Preço sob consulta</p><p class="produto__parcela">Solicite o orçamento e a gente passa o valor no WhatsApp</p></div>';
     return `<div class="produto__precos">
         ${p.precoAntigo ? `<s><span class="sr-only">de </span>${moeda(p.precoAntigo)}</s>` : ''}
         <p class="produto__preco"><strong>${moeda(p.preco)}</strong></p>
@@ -105,6 +105,7 @@
   function acao(p) {
     if (!(estoque(p) > 0)) return '<button class="btn-add" type="button" disabled>Esgotado</button>';
     if (carrinho[p.id]) return seletorQtd(p, carrinho[p.id]);
+    if (!temPreco(p)) return `<button class="btn-add btn-add--whats" type="button" data-f="add">Solicitar orçamento<span class="sr-only">: ${esc(p.nome)}</span></button>`;
     return `<button class="btn-add" type="button" data-f="add">Adicionar ao carrinho<span class="sr-only">: ${esc(p.nome)}</span></button>`;
   }
 
@@ -166,7 +167,7 @@
     else if (!antes && qtd) {
       mostraToast(freteGratisAcima && !gratis
         ? `Adicionado! Faltam ${moeda(freteGratisAcima - sub)} para o frete grátis.`
-        : 'Adicionado ao carrinho.');
+        : temPreco(p) ? 'Adicionado ao carrinho.' : 'Adicionado ao carrinho para orçamento.');
     } else if (qtd === estoque(p) && qtd > antes) mostraToast(`Temos só ${estoque(p)} em estoque.`);
   }
 
