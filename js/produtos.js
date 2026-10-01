@@ -9,7 +9,7 @@
 
    ref          código interno do produto (não aparece no site)
    preco        preço à vista (Pix ou cartão)
-                null = "Sob consulta" (botão de orçamento pelo WhatsApp)
+                null = "Sob consulta" (vai pelo carrinho como "aguardando orçamento")
    precoAntigo  opcional — preço riscado (o produto aparece em "Ofertas")
    selo         opcional — etiqueta no card (ex.: 'Mais vendido')
    categoria    id de uma categoria em VOLMASTER_CATEGORIAS
@@ -22,18 +22,11 @@
    resumo       opcional — texto da página do produto
    destaques    opcional — lista de pontos fortes
    specs        opcional — lista de [característica, valor]
-   atendimento  opcional — id de VOLMASTER_CONFIG.atendimentos: o pedido e o
-                orçamento desse produto vão para esse WhatsApp em vez da loja
    ========================================================= */
 
 window.VOLMASTER_CONFIG = {
   // Número que recebe os pedidos, só dígitos com DDI + DDD
   whatsapp: '5562984930079',
-  // outros WhatsApps que atendem produtos específicos (campo atendimento do produto)
-  atendimentos: {
-    suporte: { nome: 'Volmaster Suporte', whatsapp: '5562981983660' },
-    matheus: { nome: 'Matheus Volmaster', whatsapp: '5562992328375' },
-  },
   freteGratisAcima: 0,     // frete grátis a partir deste valor (0 = desligado)
   freteFixo: 0,            // 0 = frete combinado no WhatsApp após o pedido
   descontoPix: 0,          // % de desconto no Pix (0 = sem desconto)

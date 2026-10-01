@@ -2,8 +2,8 @@
    Volmaster Ferramentas — checkout
    Coleta dados, entrega e forma de pagamento, calcula o total e envia
    o pedido para o WhatsApp da loja (CONFIG.whatsapp em js/produtos.js).
-   Produtos com campo atendimento vão para o WhatsApp de CONFIG.atendimentos;
-   se o carrinho misturar atendimentos, o pedido é dividido, uma mensagem para cada.
+   Produtos sem preço também passam pelo carrinho e vão na mensagem
+   marcados como "Aguardando orçamento".
    Para cobrar online (Pix automático, cartão), troque enviaPedido()
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
@@ -58,28 +58,37 @@
 
   const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
-  function totais(pagamento, itens = loja.itens()) {
-    const sub = itens.reduce((s, { produto: p, qtd }) => s + p.preco * qtd, 0);
+  function totais(pagamento) {
+    const sub = loja.subtotal();
     const frete = loja.frete(sub);
     const desconto = pagamento === 'pix' ? sub * descontoPix / 100 : 0;
-    return { sub, frete, desconto, total: sub + (frete || 0) - desconto };
+    const aOrcar = loja.aguardandoOrcamento();
+    return { sub, frete, desconto, aOrcar, total: sub + (frete || 0) - desconto };
   }
 
+  const AGUARDANDO = 'Aguardando orçamento';
+  // total para mostrar: só orçamento, valor + orçamento, ou valor
+  const textoTotal = ({ sub, frete, total, aOrcar }) => (aOrcar && !sub
+    ? AGUARDANDO
+    : `${moeda(total)}${frete === null ? ' + frete' : ''}${aOrcar ? ' + itens aguardando orçamento' : ''}`);
+
   function resumo(pagamento) {
-    const { sub, frete, desconto, total } = totais(pagamento);
+    const t = totais(pagamento);
+    const { sub, frete, desconto, aOrcar } = t;
     return `
       <ul class="resumo__itens">
         ${loja.itens().map(({ produto: p, qtd }) => `
           <li>
             <span class="resumo__midia">${loja.midia(p, false)}<span class="resumo__qtd">${qtd}</span></span>
             <span class="resumo__nome">${esc(p.nome)}</span>
-            <span class="resumo__valor">${moeda(p.preco * qtd)}</span>
+            <span class="resumo__valor">${loja.temPreco(p) ? moeda(p.preco * qtd) : 'A orçar'}</span>
           </li>`).join('')}
       </ul>
-      <div class="carrinho__linha"><span>Subtotal</span><span>${moeda(sub)}</span></div>
+      ${sub ? `<div class="carrinho__linha"><span>Subtotal</span><span>${moeda(sub)}</span></div>` : ''}
       <div class="carrinho__linha"><span>Frete</span><span>${loja.textoFrete(frete)}</span></div>
       ${desconto ? `<div class="carrinho__linha carrinho__linha--desconto"><span>Desconto Pix (${descontoPix}%)</span><span>− ${moeda(desconto)}</span></div>` : ''}
-      <div class="carrinho__total"><span>Total${frete === null ? ' <small>+ frete</small>' : ''}</span><strong>${moeda(total)}</strong></div>
+      <div class="carrinho__total"><span>Total</span><strong>${textoTotal(t)}</strong></div>
+      ${aOrcar ? '<p class="checkout__nota">Os itens sem preço vão no pedido como "aguardando orçamento": a gente passa o valor no WhatsApp.</p>' : ''}
       ${frete === null ? '<p class="checkout__nota">O frete é calculado pelo CEP e confirmado no WhatsApp antes do pagamento.</p>' : ''}`;
   }
 
@@ -222,77 +231,61 @@
 
   const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de crédito' };
 
-  const linkPedido = (numero, mensagem) => `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
-
   function enviaPedido(form) {
     const dados = Object.fromEntries(new FormData(form));
+    const t = totais(dados.pagamento);
+    const { sub, frete, desconto, aOrcar } = t;
     const pagamento = dados.pagamento === 'cartao'
       ? `${NOMES_PAGAMENTO.cartao} (parcelado — combinar as condições)`
       : NOMES_PAGAMENTO[dados.pagamento];
 
+    const itens = loja.itens();
     // o WhatsApp só recebe texto: vai o link da página de prévia do produto
     // (produto/<id>.html, gerada por ferramentas/gerar-previas.py), que ele mostra com foto e nome
     const previa = (p) => (/^https?:/.test(location.protocol) ? new URL(`produto/${p.id}.html`, location.href).href : null);
+    // sem preço: vai em negrito (*...*) para a loja ver que precisa mandar o orçamento
+    const valorItem = (p, qtd) => (loja.temPreco(p) ? moeda(p.preco * qtd) : `*${AGUARDANDO.toUpperCase()}*`);
+    const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${valorItem(p, qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
+    const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
     const endereco = `${dados.rua}, ${dados.numero}${dados.complemento ? ` (${dados.complemento})` : ''} — ${dados.bairro}, ${dados.cidade}/${dados.uf} — CEP ${dados.cep}`;
-
-    function mensagemDe(itens) {
-      const { sub, frete, desconto, total } = totais(dados.pagamento, itens);
-      const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${moeda(p.preco * qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);
-      const titulo = itens.length === 1 ? itens[0].produto.nome : `${itens.length} ferramentas`;
-      const mensagem = [
-        `*Novo pedido — ${titulo}*`,
-        '',
-        ...linhas,
-        '',
-        `Subtotal: ${moeda(sub)}`,
-        `Frete: ${loja.textoFrete(frete)}`,
-        desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
-        `*Total: ${moeda(total)}${frete === null ? ' + frete' : ''}*`,
-        `Pagamento: ${pagamento}`,
-        '',
-        `Cliente: ${dados.nome}`,
-        `${digitos(dados.cpf).length === 14 ? 'CNPJ' : 'CPF'}: ${dados.cpf}`,
-        `WhatsApp: ${dados.telefone}`,
-        `E-mail: ${dados.email}`,
-        `Entrega: ${endereco}`,
-      ].filter((l) => l !== null).join('\n');
-      return { mensagem, total, frete };
-    }
-
-    const grupos = {};
-    // cada produto vai para o WhatsApp de quem o atende (loja.contato)
-    for (const item of loja.itens()) (grupos[loja.contato(item.produto).whatsapp] ||= []).push(item);
-    const envios = Object.entries(grupos).map(([numero, itens]) => ({ numero, nome: loja.contato(itens[0].produto).nome, itens, ...mensagemDe(itens) }));
+    const mensagem = [
+      `*${aOrcar && !sub ? 'Pedido de orçamento' : 'Novo pedido'} — ${titulo}*`,
+      '',
+      ...linhas,
+      '',
+      sub ? `Subtotal: ${moeda(sub)}` : null,
+      `Frete: ${loja.textoFrete(frete)}`,
+      desconto ? `Desconto Pix: − ${moeda(desconto)}` : null,
+      `*Total: ${textoTotal(t)}*`,
+      `Pagamento: ${pagamento}`,
+      '',
+      `Cliente: ${dados.nome}`,
+      `${digitos(dados.cpf).length === 14 ? 'CNPJ' : 'CPF'}: ${dados.cpf}`,
+      `WhatsApp: ${dados.telefone}`,
+      `E-mail: ${dados.email}`,
+      `Entrega: ${endereco}`,
+    ].filter((l) => l !== null).join('\n');
 
     if (!whatsapp) {
-      console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + envios.map((e) => e.mensagem).join('\n\n'));
+      console.warn('Volmaster Ferramentas: defina VOLMASTER_CONFIG.whatsapp em js/produtos.js para receber os pedidos.\n\n' + mensagem);
       loja.mostraToast('O recebimento de pedidos ainda está sendo configurado.');
       return;
     }
 
     const { pagamento: _p, ...cliente } = dados;
     try { localStorage.setItem(CHAVE_DADOS, JSON.stringify({ ...cliente, pagamento: dados.pagamento })); } catch { /* sem armazenamento */ }
-    // o navegador só deixa abrir uma janela por clique: a primeira mensagem abre sozinha, as outras ficam nos botões abaixo
-    window.open(linkPedido(envios[0].numero, envios[0].mensagem), '_blank', 'noopener');
+    const link = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensagem)}`;
+    window.open(link, '_blank', 'noopener');
 
-    const total = envios.reduce((s, e) => s + e.total, 0);
-    const semFrete = envios.some((e) => e.frete === null);
-    const dividido = envios.length > 1;
-    const botoes = dividido
-      ? envios.map((e, i) => `<a class="btn ${i ? 'btn--primario' : 'btn--secundario'}" href="${linkPedido(e.numero, e.mensagem)}" target="_blank" rel="noopener">${i ? 'Enviar' : 'Abrir de novo'} o pedido para ${esc(e.nome)}</a>`).join('')
-      : `<a class="btn btn--primario" href="${linkPedido(envios[0].numero, envios[0].mensagem)}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>`;
-    const explicacao = dividido
-      ? `<p>Seu pedido foi dividido: ${envios.map((e) => `<strong>${e.itens.length} ${e.itens.length === 1 ? 'produto' : 'produtos'}</strong> com o ${esc(e.nome)}`).join(' e ')}. Abrimos a primeira mensagem; <strong>toque no botão abaixo para enviar a outra</strong>.</p>`
-      : `<p>Abrimos o WhatsApp${envios[0].numero !== whatsapp ? ` do ${esc(envios[0].nome)}` : ''} com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento'}.</p>`;
-
+    const proximo = aOrcar ? 'o orçamento' : dados.pagamento === 'pix' ? 'o código Pix' : 'o link de pagamento';
     conteudo.innerHTML = `
       <div class="confirmacao">
         <span class="confirmacao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
         <h3 tabindex="-1" id="confirmacao-titulo">Pedido enviado!</h3>
-        ${explicacao}
-        <p class="confirmacao__total">Total: <strong>${moeda(total)}${semFrete ? ' + frete' : ''}</strong> · ${esc(pagamento)}</p>
+        <p>Abrimos o WhatsApp com o seu pedido. <strong>Envie a mensagem</strong> para confirmarmos o estoque e mandarmos ${proximo}.</p>
+        <p class="confirmacao__total">Total: <strong>${textoTotal(t)}</strong> · ${esc(pagamento)}</p>
         <div class="confirmacao__acoes">
-          ${botoes}
+          <a class="btn btn--primario" href="${link}" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a>
           <button class="btn btn--secundario" type="button" data-fecha-checkout>Continuar comprando</button>
         </div>
       </div>`;
