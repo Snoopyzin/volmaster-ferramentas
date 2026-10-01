@@ -27,6 +27,10 @@
 window.VOLMASTER_CONFIG = {
   // Número que recebe os pedidos, só dígitos com DDI + DDD
   whatsapp: '5562984930079',
+  // Endereço público do site: o link "Ver a peça" do pedido no WhatsApp usa ele,
+  // para abrir no celular de quem recebe (mesmo se o pedido sair de um teste local).
+  // Mudou de domínio? Troque aqui e rode  python ferramentas/gerar-previas.py
+  site: 'https://snoopyzin.github.io/volmaster-ferramentas/',
   freteGratisAcima: 0,     // frete grátis a partir deste valor (0 = desligado)
   freteFixo: 0,            // 0 = frete combinado no WhatsApp após o pedido
   descontoPix: 0,          // % de desconto no Pix (0 = sem desconto)

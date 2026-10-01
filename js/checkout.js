@@ -8,7 +8,7 @@
    pela chamada ao gateway de pagamento (Mercado Pago, Pagar.me etc.).
    ========================================================= */
 (() => {
-  const { whatsapp, descontoPix = 0 } = window.VOLMASTER_CONFIG;
+  const { whatsapp, site, descontoPix = 0 } = window.VOLMASTER_CONFIG;
   const loja = window.VolmasterLoja;
   const { moeda, esc } = loja;
   const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
@@ -242,7 +242,7 @@
     const itens = loja.itens();
     // o WhatsApp só recebe texto: vai o link da página de prévia do produto
     // (produto/<id>.html, gerada por ferramentas/gerar-previas.py), que ele mostra com foto e nome
-    const previa = (p) => (/^https?:/.test(location.protocol) ? new URL(`produto/${p.id}.html`, location.href).href : null);
+    const previa = (p) => new URL(`produto/${p.id}.html`, site || location.href).href;
     // sem preço: vai em negrito (*...*) para a loja ver que precisa mandar o orçamento
     const valorItem = (p, qtd) => (loja.temPreco(p) ? moeda(p.preco * qtd) : `*${AGUARDANDO.toUpperCase()}*`);
     const linhas = itens.flatMap(({ produto: p, qtd }) => [`• ${qtd}x ${p.nome} — ${valorItem(p, qtd)}`, previa(p) && `  Ver a peça: ${previa(p)}`]).filter(Boolean);

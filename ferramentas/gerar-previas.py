@@ -18,7 +18,6 @@ import subprocess
 
 from PIL import Image
 
-SITE = 'https://snoopyzin.github.io/volmaster-ferramentas/'
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 PAGINAS = RAIZ / 'produto'
 FOTOS = RAIZ / 'images' / 'previa'
@@ -26,12 +25,14 @@ FOTOS = RAIZ / 'images' / 'previa'
 LER_CATALOGO = """
 global.window = {};
 require('./js/produtos.js');
-process.stdout.write(JSON.stringify(window.VOLMASTER_PRODUTOS));
+process.stdout.write(JSON.stringify({ site: window.VOLMASTER_CONFIG.site, produtos: window.VOLMASTER_PRODUTOS }));
 """
 
-produtos = json.loads(subprocess.run(
+catalogo = json.loads(subprocess.run(
     ['node', '-e', LER_CATALOGO], cwd=RAIZ, capture_output=True, check=True, text=True,
     encoding='utf-8').stdout)
+SITE = catalogo['site']  # VOLMASTER_CONFIG.site em js/produtos.js
+produtos = catalogo['produtos']
 
 moeda = lambda v: 'R$ ' + f'{v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
 
